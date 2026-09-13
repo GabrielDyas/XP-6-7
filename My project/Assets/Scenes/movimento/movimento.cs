@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Movimento3DUnificado : MonoBehaviour
+public class Movimento : MonoBehaviour
 {
     public InputActionReference acaoMovimentar;
     public float velocidade = 5f;
@@ -14,6 +14,7 @@ public class Movimento3DUnificado : MonoBehaviour
     public float dashCooldown = 1f;
     private bool podeDashear = true;
     private bool podePular = true;
+    private bool puloDuplo = false;
     public LayerMask terreno;
 
 
@@ -115,6 +116,7 @@ public class Movimento3DUnificado : MonoBehaviour
             {
                 Debug.Log("O personagem encostou no terreno!");
                 podePular = true;
+                puloDuplo = true;
             }
         }
     }

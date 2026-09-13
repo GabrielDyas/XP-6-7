@@ -1,0 +1,57 @@
+{
+    "version": 1,
+    "name": "Habilidades",
+    "maps": [
+        {
+            "name": "Habilidades",
+            "id": "282895d2-57ff-42f4-a811-8bda6654d5e9",
+            "actions": [
+                {
+                    "name": "Q",
+                    "type": "Button",
+                    "id": "5afb45de-d12c-4860-af89-6c8993632b84",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "E",
+                    "type": "Button",
+                    "id": "f579f231-2ec3-4bd5-bbec-7ce1830e663a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2ef2c219-554d-406c-857c-0096dfd24094",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Q",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "694c4a94-c36c-4a74-8ae1-f954b0138d05",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "E",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
