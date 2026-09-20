@@ -1384,7 +1384,7 @@ MonoBehaviour:
       Owner: {fileID: 1123713367}
       Enabled: 1
       Input:
-        InputAction: {fileID: 0}
+        InputAction: {fileID: -2785321485924940553, guid: 5a9dbf6105a0fc449ad62b047aaa8bdb, type: 3}
         Gain: 1
         CancelDeltaTime: 0
       InputValue: 0
@@ -1422,7 +1422,7 @@ MonoBehaviour:
     Value: 0
     Center: 0
     Range: {x: -180, y: 180}
-    Wrap: 0
+    Wrap: 1
     Recentering:
       Enabled: 0
       Wait: 1
@@ -1432,7 +1432,7 @@ MonoBehaviour:
     Value: 0
     Center: 0
     Range: {x: -45, y: 70}
-    Wrap: 0
+    Wrap: 1
     Recentering:
       Enabled: 0
       Wait: 1

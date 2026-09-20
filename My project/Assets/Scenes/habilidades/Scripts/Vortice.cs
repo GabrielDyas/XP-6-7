@@ -17,10 +17,8 @@ public class Vortice : MonoBehaviour
     {
         if (other.CompareTag("Cubos"))
         {
-            // Move o inimigo em direção ao centro do vórtice
             Vector3 direction = (transform.position - other.transform.position).normalized;
             other.transform.position += direction * velocidadeDeAtracao * Time.deltaTime;
-            // Rotaciona o inimigo em torno do vórtice
             other.transform.RotateAround(transform.position, Vector3.up, velocidadeDeRotacao * Time.deltaTime);
         }
     }

@@ -93,18 +93,21 @@ public class Movimento : MonoBehaviour
     {
         if (acaoVirar != null)
         {
-            Vector2 inputVetor2D = acaoVirar.action.ReadValue<Vector2>();
-            if (inputVetor2D.sqrMagnitude > 0.01f)
+            //girar o personagem com base na direcão x da câmera
+            Vector3 direcaoCamera = Camera.main.transform.forward;
+            direcaoCamera.y = 0;
+
+            if (direcaoCamera != Vector3.zero)
             {
-                float angulo = Mathf.Atan2(inputVetor2D.x, inputVetor2D.y) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.Euler(0, angulo, 0);
+                Quaternion rotacao = Quaternion.LookRotation(direcaoCamera);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotacao, Time.deltaTime * 10f);
             }
         }
     }
 
     private void Pular()
     {
-        Vector3 direcao = Vector3.up + rb.linearVelocity.normalized;
+        Vector3 direcao =Vector3.up + rb.linearVelocity.normalized;
         rb.AddForce(direcao * forcaDoPulo, ForceMode.Impulse);
         podePular = false;
     }
@@ -124,8 +127,12 @@ public class Movimento : MonoBehaviour
     private void Dash()
     {
         podeDashear = false;
-        Vector3 direcao = inputVetor;
-        rb.AddForce(direcao * dashForce, ForceMode.Impulse);
+        Vector3 direcao = new Vector3(inputVetor.x, 0, inputVetor.z).normalized;
+        Vector3 direcaoCamera = Camera.main.transform.forward;
+        Vector3 direcaoDash = (direcaoCamera * inputVetor.z + Camera.main.transform.right * inputVetor.x).normalized;
+        direcaoDash.y = 0;
+        rb.AddForce(direcaoDash * dashForce, ForceMode.Impulse);
+
     }
 
     private IEnumerator DashCooldownCoroutine()
