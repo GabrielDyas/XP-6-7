@@ -14,7 +14,7 @@ public class Movimento : MonoBehaviour
     public float dashCooldown = 1f;
     private bool podeDashear = true;
     private bool podePular = true;
-    private bool puloDuplo = false;
+    // private bool puloDuplo = false;
     public LayerMask terreno;
 
 
@@ -119,7 +119,7 @@ public class Movimento : MonoBehaviour
             {
                 Debug.Log("O personagem encostou no terreno!");
                 podePular = true;
-                puloDuplo = true;
+                // puloDuplo = true;
             }
         }
     }
