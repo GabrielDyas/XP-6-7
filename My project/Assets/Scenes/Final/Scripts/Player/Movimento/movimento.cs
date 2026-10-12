@@ -1,143 +1,174 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Movimento : MonoBehaviour
 {
-    public InputActionReference acaoMovimentar;
-    public float velocidade = 5f;
-    public float forcaDoPulo = 5f;
-    public InputActionReference acaoVirar;
-    public InputActionReference acaoDashear;
-    public float dashForce = 10f;
-    public float dashCooldown = 1f;
-    private bool podeDashear = true;
-    private bool podePular = true;
-    // private bool puloDuplo = false;
-    public LayerMask terreno;
+    [Header("Movimento")]
+    [SerializeField] private float velocidade = 5f;
+    [SerializeField] private float forcaDoPulo = 5f;
+    [SerializeField] private LayerMask terreno;
 
+    [Header("Dash")]
+    [SerializeField] private float dashForce = 10f;
+    [SerializeField] private float dashCooldown = 1f;
+
+    // Classe gerada a partir do asset InputSystem_Actions
+    private InputSystem_Actions input;
 
     private Rigidbody rb;
-    private Vector3 inputVetor;
+    private Transform cam;
 
-    void OnEnable()
-    {
-        if (acaoMovimentar != null)
-            acaoMovimentar.action.Enable();
-        if (acaoVirar != null)
-            acaoVirar.action.Enable();
-        if (acaoDashear != null)
-            acaoDashear.action.Enable();
-    }
+    private Vector2 inputMovimento;
+    private bool pedidoPulo;
+    private bool pedidoDash;
 
-    void OnDisable()
-    {
-        if (acaoMovimentar != null)
-            acaoMovimentar.action.Disable();
-        if (acaoVirar != null)
-            acaoVirar.action.Disable();
-        if (acaoDashear != null)
-            acaoDashear.action.Disable();
-    }
+    private bool podePular = true;
+    private bool podeDashear = true;
 
-    void Start()
+    #region Ciclo de vida
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        cam = Camera.main.transform;
+        input = new InputSystem_Actions();
     }
 
-    void Update()
+    private void OnEnable()
     {
-        if (acaoMovimentar != null)
-        {
-            inputVetor = acaoMovimentar.action.ReadValue<Vector3>();
-        }
+        input.Player.Move.performed += AoMovimentar;
+        input.Player.Move.canceled += AoMovimentar;
+        input.Player.Jump.performed += AoPular;
+        input.Player.Sprint.performed += AoDashear; // troque por input.Player.Dash se criar a ação
+
+        input.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+        input.Player.Move.performed -= AoMovimentar;
+        input.Player.Move.canceled -= AoMovimentar;
+        input.Player.Jump.performed -= AoPular;
+        input.Player.Sprint.performed -= AoDashear;
+
+        input.Player.Disable();
+
+        inputMovimento = Vector2.zero;
+        pedidoPulo = false;
+        pedidoDash = false;
+    }
+
+    private void OnDestroy()
+    {
+        input.Dispose();
+    }
+
+    #endregion
+
+    #region Callbacks do Input System
+
+    private void AoMovimentar(InputAction.CallbackContext ctx) => inputMovimento = ctx.ReadValue<Vector2>();
+    private void AoPular(InputAction.CallbackContext ctx) => pedidoPulo = true;
+    private void AoDashear(InputAction.CallbackContext ctx) => pedidoDash = true;
+
+    #endregion
+
+    private void Update()
+    {
         Girar();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (podePular)
-        {
             Movimentar();
+
+        if (pedidoPulo)
+        {
+            pedidoPulo = false;
+            if (podePular && Mathf.Abs(rb.linearVelocity.y) < 0.05f)
+                Pular();
         }
 
-        if (inputVetor.y > 0.5f && podePular && Mathf.Abs(rb.linearVelocity.y) < 0.05f)
+        if (pedidoDash)
         {
-            Pular();
-        }
-
-        if (acaoDashear != null && acaoDashear.action.triggered && podeDashear)
-        {
-            Dash();
-            StartCoroutine(DashCooldownCoroutine());
+            pedidoDash = false;
+            if (podeDashear)
+            {
+                Dash();
+                StartCoroutine(DashCooldownCoroutine());
+            }
         }
     }
+
+    #region Ações
 
     public void Movimentar()
     {
-        Vector3 direcaoCamera = Camera.main.transform.forward;
-        Vector3 camRight = Camera.main.transform.right;
-        direcaoCamera.y = 0;
-        camRight.y = 0;
-        direcaoCamera.Normalize();
-        camRight.Normalize();
-
-        Vector3 direcao = (camRight * inputVetor.x + direcaoCamera * inputVetor.z).normalized;
+        Vector3 direcao = DirecaoRelativaACamera(inputMovimento);
         Vector3 novaVelocidade = direcao * velocidade;
 
         rb.linearVelocity = new Vector3(novaVelocidade.x, rb.linearVelocity.y, novaVelocidade.z);
-
     }
+
     private void Girar()
     {
-        if (acaoVirar != null)
-        {
-            //girar o personagem com base na direcão x da câmera
-            Vector3 direcaoCamera = Camera.main.transform.forward;
-            direcaoCamera.y = 0;
+        Vector3 direcaoCamera = cam.forward;
+        direcaoCamera.y = 0;
 
-            if (direcaoCamera != Vector3.zero)
-            {
-                Quaternion rotacao = Quaternion.LookRotation(direcaoCamera);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotacao, Time.deltaTime * 10f);
-            }
+        if (direcaoCamera != Vector3.zero)
+        {
+            Quaternion rotacao = Quaternion.LookRotation(direcaoCamera);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotacao, Time.deltaTime * 10f);
         }
     }
 
     private void Pular()
     {
-        Vector3 direcao =Vector3.up + rb.linearVelocity.normalized;
+        Vector3 direcao = Vector3.up + rb.linearVelocity.normalized;
         rb.AddForce(direcao * forcaDoPulo, ForceMode.Impulse);
         podePular = false;
-    }
-    private void OnCollisionEnter(Collision col)
-    {
-        if (!podePular)
-        {
-            if (((1 << col.gameObject.layer) & terreno) != 0)
-            {
-                Debug.Log("O personagem encostou no terreno!");
-                podePular = true;
-                // puloDuplo = true;
-            }
-        }
     }
 
     private void Dash()
     {
         podeDashear = false;
-        Vector3 direcao = new Vector3(inputVetor.x, 0, inputVetor.z).normalized;
-        Vector3 direcaoCamera = Camera.main.transform.forward;
-        Vector3 direcaoDash = (direcaoCamera * inputVetor.z + Camera.main.transform.right * inputVetor.x).normalized;
-        direcaoDash.y = 0;
-        rb.AddForce(direcaoDash * dashForce, ForceMode.Impulse);
 
+        Vector3 direcaoDash = DirecaoRelativaACamera(inputMovimento);
+
+        if (direcaoDash == Vector3.zero)
+            direcaoDash = transform.forward;
+
+        rb.AddForce(direcaoDash * dashForce, ForceMode.Impulse);
     }
 
     private IEnumerator DashCooldownCoroutine()
     {
         yield return new WaitForSeconds(dashCooldown);
         podeDashear = true;
+    }
+
+    #endregion
+
+    private void OnCollisionEnter(Collision col)
+    {
+        if (podePular) return;
+
+        if (((1 << col.gameObject.layer) & terreno) != 0)
+            podePular = true;
+    }
+
+    private Vector3 DirecaoRelativaACamera(Vector2 input)
+    {
+        Vector3 frente = cam.forward;
+        Vector3 direita = cam.right;
+        frente.y = 0;
+        direita.y = 0;
+        frente.Normalize();
+        direita.Normalize();
+
+        return (direita * input.x + frente * input.y).normalized;
     }
 }
