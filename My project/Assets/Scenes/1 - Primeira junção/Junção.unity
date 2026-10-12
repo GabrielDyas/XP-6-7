@@ -660,7 +660,7 @@ Transform:
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0.32827, y: 3, z: 1.46909}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1617,7 +1617,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 1537f8978fa788e4899bd9ddb48a2597, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 827d33270aad0a04b906b6468ca3142c, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &1367573649
 GameObject:
@@ -1633,7 +1633,7 @@ GameObject:
   - component: {fileID: 1367573653}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1650,16 +1650,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdc651c346b8ad84cb651f47c9b510e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movimento3DUnificado
-  acaoMovimentar: {fileID: 3653403070319630475, guid: 5a9dbf6105a0fc449ad62b047aaa8bdb, type: 3}
   velocidade: 5
   forcaDoPulo: 4
-  acaoVirar: {fileID: -2785321485924940553, guid: 5a9dbf6105a0fc449ad62b047aaa8bdb, type: 3}
-  acaoDashear: {fileID: -2247109459693586145, guid: 5a9dbf6105a0fc449ad62b047aaa8bdb, type: 3}
-  dashForce: 10
-  dashCooldown: 1
   terreno:
     serializedVersion: 2
     m_Bits: 8
+  dashForce: 10
+  dashCooldown: 1
 --- !u!54 &1367573651
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1957,10 +1954,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5000001
+  m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1903740336
 MeshRenderer:
   m_ObjectHideFlags: 0

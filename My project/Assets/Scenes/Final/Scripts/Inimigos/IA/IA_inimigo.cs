@@ -9,6 +9,9 @@ public class IA_inimigo : MonoBehaviour
     void Start()
     {
         inimigo = GetComponent<NavMeshAgent>();
+
+        GameObject player = GameObject.FindWithTag("Player");
+        objetivo = player.transform;
     }
     private void Update()
     {
