@@ -154,9 +154,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projetil
   efeito: {fileID: 0}
-  terreno:
-    serializedVersion: 2
-    m_Bits: 0
-  interagiveis:
-    serializedVersion: 2
-    m_Bits: 0

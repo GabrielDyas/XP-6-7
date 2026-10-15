@@ -1,40 +1,46 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using JetBrains.Annotations;
 public class Disparo : MonoBehaviour
 {
 
     public GameObject pontoDeDisparo;
     public GameObject projetil; 
     public float velocidadeDoProjetil = 10f;
-    public InputActionAsset inputActions; // Referência ao InputActionAsset
+    private InputSystem_Actions input;
 
     public GameObject habilidadeVorticePrefab; // Prefab do vórtice
     public GameObject habilidadeDisparoPrefab; // Prefab do disparo
 
-
-
-    private void Start()
+    private void Awake()
     {
+
+        // Inicializar o sistema de entrada
+        input = new InputSystem_Actions();
+    }
+
+    private void OnEnable()
+    {
+        input.Player.Habilidade1.performed += ctx => Explosao();
+        input.Player.Habilidade2.performed += ctx => Vortice();
         // Ativar as ações de entrada
-        inputActions.Enable();
+        input.Enable();
     }
 
     private void Update()
     {
-        // Verificar se a ação de disparo foi realizada
-        if (inputActions.FindAction("Q").triggered)
+        if(input.Player.Habilidade1.triggered)
         {
-            Disparar();
+            Explosao();
         }
-        // Verificar se a ação de vórtice foi realizada
-        if (inputActions.FindAction("E").triggered)
+        if(input.Player.Habilidade2.triggered)
         {
             Vortice();
         }
     }
 
-    private void Disparar()
+    private void Explosao()
     {
 
         // Instanciar o projetil na posição do ponto de disparo
