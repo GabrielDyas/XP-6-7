@@ -15,7 +15,7 @@ public class Vortice : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Cubos"))
+        if (other.CompareTag("Inimigos"))
         {
             Vector3 direction = (transform.position - other.transform.position).normalized;
             other.transform.position += direction * velocidadeDeAtracao * Time.deltaTime;

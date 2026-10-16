@@ -12,7 +12,7 @@ public class Explosao : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Cubos"))
+        if (other.CompareTag("Inimigos"))
         {
             Rigidbody rb = other.GetComponent<Rigidbody>();
             if (rb != null)

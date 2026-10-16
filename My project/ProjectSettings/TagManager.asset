@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cubos
   - Terreno
+  - Inimigo
   layers:
   - Default
   - TransparentFX
