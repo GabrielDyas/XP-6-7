@@ -1782,8 +1782,7 @@ MonoBehaviour:
   acaoAtirar: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   acaoRecarregar: {fileID: 6660964564004154653, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   controladorTiro: {fileID: 1367573653}
-  capacidadeCarregador: 10
-  dano: 5
+  dadosArma: {fileID: 11400000, guid: 9c56deccf516c1443ac70c6fe9dcfb93, type: 2}
 --- !u!114 &1367573655
 MonoBehaviour:
   m_ObjectHideFlags: 0

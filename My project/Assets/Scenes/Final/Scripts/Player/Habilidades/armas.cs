@@ -6,20 +6,16 @@ using UnityEngine.InputSystem;
 
 public class armas : MonoBehaviour
 {
-    [Header("Inputs")]
+    [Header("Referencias Inputs")]
     [SerializeField] private InputActionReference acaoAtirar;
     [SerializeField] private InputActionReference acaoRecarregar;
 
     [Header("Referencias Script")]
     [SerializeField] private controleTiro controladorTiro;
+    [SerializeField] private listaDeArmas dadosArma;
 
-    [Header("Municao")]
-    [SerializeField] private int capacidadeCarregador = 10;
     private int municaoAtual;
     private bool recarregando = false;
-
-    [UnitHeaderInspectable("Dano")]
-    [SerializeField] public float dano = 5f;
 
     private void Awake()
     {
@@ -32,9 +28,9 @@ public class armas : MonoBehaviour
         }
 
         // Começa o jogo com o carregador cheio.
-        municaoAtual = capacidadeCarregador;
+        municaoAtual = dadosArma.municao;
 
-        Debug.Log("Munição total: " + capacidadeCarregador);
+        Debug.Log("Munição total: " + dadosArma.municao);
     }
 
     private void OnEnable()
@@ -44,7 +40,7 @@ public class armas : MonoBehaviour
 
         if (acaoRecarregar != null)
             acaoRecarregar.action.Enable();
-    }
+    } // ativa e desativa os inputs do jogador caso desativar o script
 
     private void OnDisable()
     {
@@ -69,8 +65,7 @@ public class armas : MonoBehaviour
             return;
         }
         if (acaoRecarregar.action.triggered && recarregando) {
-            Debug.Log("Já está recarregando");
-            
+            Debug.Log("Já está recarregando");            
         }
         if (acaoAtirar.action.triggered)
         {
@@ -83,9 +78,9 @@ public class armas : MonoBehaviour
                 // Consome uma bala e executa o disparo.
                 municaoAtual--;
 
-                controladorTiro.Atirar(dano);
+                controladorTiro.Atirar(dadosArma.dano);
 
-                Debug.Log("Munição restante: " + municaoAtual);
+                // Debug.Log("Munição restante: " + municaoAtual);
             }
         }
     }
@@ -96,7 +91,7 @@ public class armas : MonoBehaviour
             return;
 
         // Não recarrega se o carregador já estiver cheio.
-        if (municaoAtual >= capacidadeCarregador)
+        if (municaoAtual >= dadosArma.municao)
         {
             Debug.Log("O carregador já está cheio.");
             return;
@@ -105,7 +100,7 @@ public class armas : MonoBehaviour
         recarregando = true;
 
         // Recarga instantânea: enche o carregador imediatamente.
-        municaoAtual = capacidadeCarregador;
+        municaoAtual = dadosArma.municao;
 
         Debug.Log("Arma recarregada! Munição: " + municaoAtual);
 
