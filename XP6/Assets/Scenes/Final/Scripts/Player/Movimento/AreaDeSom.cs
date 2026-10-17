@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DynamicAreaBySpeed : MonoBehaviour
+public class AreaDeSom : MonoBehaviour
 {
     [Header("Componentes")]
     [Tooltip("Rigidbody do objeto. Se deixado em branco, busca automaticamente.")]
