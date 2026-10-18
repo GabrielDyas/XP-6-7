@@ -1035,12 +1035,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movimento3DUnificado
   velocidade: 5
+  multiplicadorCorrida: 2
+  multiplicadorAgachado: 0.5
   forcaDoPulo: 8
+  dashForce: 10
+  dashDuracao: 0.2
+  dashCooldown: 1
+  colliderDoPe: {fileID: 1920814495}
   terreno:
     serializedVersion: 2
     m_Bits: 8
-  dashForce: 10
-  dashCooldown: 1
+  distanciaChao: 0.1
 --- !u!54 &1367573651
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1135,6 +1140,10 @@ MonoBehaviour:
   habilidadeExplosaoPrefab: {fileID: 2329816825424107656, guid: 95be06726cf2a834a9e4bfe50fa7fe55, type: 3}
   habilidadeVorticePrefab: {fileID: 6489058464418349626, guid: 0e6812bea7d26a14b9c414227f5f8554, type: 3}
   velocidadeDoProjetil: 10
+  distanciaMaximaDaMira: 100
+  camadasDaMira:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1001 &1384610713
 PrefabInstance:
   m_ObjectHideFlags: 0

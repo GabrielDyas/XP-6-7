@@ -4,6 +4,7 @@ using UnityEngine;
 public class Projetil : MonoBehaviour
 {
     [SerializeField] private float tempoDeVida = 5f;
+    [SerializeField] private bool usarGravidade = false; // false = voa reto até a mira
 
     private GameObject efeito;
     private Rigidbody rb;
@@ -13,12 +14,15 @@ public class Projetil : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
+
+        rb.useGravity = usarGravidade;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic; // evita atravessar paredes
     }
 
-    public void Lancar(GameObject efeito, Vector3 velocidade, Collider[] ignorar, Quaternion rotacao)
+    public void Lancar(GameObject efeito, Vector3 velocidade, Collider[] ignorar)
     {
         this.efeito = efeito;
-        rb.linearVelocity = velocidade * rotacao.eulerAngles.magnitude;
+        rb.linearVelocity = velocidade;
 
         foreach (Collider c in ignorar)
             if (c != null) Physics.IgnoreCollision(col, c);
