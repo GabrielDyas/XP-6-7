@@ -3,11 +3,35 @@ using UnityEngine;
 public class mainInimigo : MonoBehaviour
 {
     public float vida = 10f;
-    public void tomarDano(float dano) {
-        vida -= dano;       
-    }
-    private void FixedUpdate()
+
+    private Material materialInimigo;
+    private Color corOriginal;
+    private bool corAlterada = false;
+
+    private void Awake()
     {
+        Renderer renderizador = GetComponentInChildren<Renderer>();
+
+        if (renderizador != null)
+        {
+            materialInimigo = renderizador.material;
+            corOriginal = materialInimigo.color;
+        }
+    }
+
+    public void tomarDano(float dano)
+    {
+        vida -= dano;
+
+        if (materialInimigo != null)
+        {
+            corAlterada = !corAlterada;
+
+            materialInimigo.color = corAlterada
+                ? Color.red
+                : corOriginal;
+        }
+
         if (vida <= 0f)
         {
             Destroy(gameObject);
