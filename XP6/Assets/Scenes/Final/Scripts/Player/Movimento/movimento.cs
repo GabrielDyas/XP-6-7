@@ -39,27 +39,22 @@ public class Movimento : MonoBehaviour
     public EstadoBase Pulo { get; private set; }
     public EstadoBase Caindo { get; private set; }
 
-    // Já usou o pulo extra no ar? (reseta ao aterrissar)
     public bool PuloNoArUsado { get; set; }
 
     private Transform cam;
     private float proximoDash;
 
-    // ===== Leituras de input usadas por vários estados =====
     public Vector2 InputMovimento => Controles.Player.Move.ReadValue<Vector2>();
 
-    // Andando/Agachado: apertar Shift indo para frente -> Correndo
     public bool QuerCorrer =>
         Controles.Player.Sprint.WasPressedThisFrame() && InputMovimento.y > 0.1f;
 
-    // Andando/Agachado: apertar Shift indo para os lados ou para trás -> Dash
     public bool QuerDash =>
         Controles.Player.Sprint.WasPressedThisFrame()
         && InputMovimento.sqrMagnitude > 0.01f
         && InputMovimento.y <= 0.1f
         && Time.time >= proximoDash;
 
-    // Correndo: apertar Shift de novo (movendo) -> Dash na direção do movimento
     public bool QuerDashCorrendo =>
         Controles.Player.Sprint.WasPressedThisFrame()
         && InputMovimento.sqrMagnitude > 0.01f
@@ -73,7 +68,6 @@ public class Movimento : MonoBehaviour
     {
         Rb = GetComponent<Rigidbody>();
 
-        // Se não foi arrastado no Inspector, tenta achar o filho "pe"
         if (colliderDoPe == null)
         {
             Transform pe = transform.Find("pe");
