@@ -10,20 +10,38 @@ public class IA_inimigo : MonoBehaviour
         Atacando
     }
 
-    [Header("Configurações")]
-    [SerializeField] private float raioBusca = 20f;
-    [SerializeField] private int bufferSearchtoIdle = 10; 
+    [Header("Audição")]
+    [Tooltip("Área de som do jogador. Se vazia, é procurada no objeto com a tag Player.")]
+    [SerializeField] private AreaDeSom areaDeSomJogador;
 
-    private float raioAtual;
+    [Tooltip("Fração da área de som em que o inimigo percebe o jogador durante a busca (0 a 1). " +
+             "É também a sensibilidade logo após ouvir algo.")]
+    [SerializeField, Range(0.1f, 1f)] private float sensibilidadeEmBusca = 0.5f;
+
+    [Tooltip("Segundos para a sensibilidade voltar ao máximo enquanto o inimigo está Inativo.")]
+    [SerializeField] private float tempoRecuperacao = 10f;
+
     [Header("Debug")]
-    [SerializeField]private Estado estado = Estado.Inativo;
-    private NavMeshAgent inimigo;
+    [SerializeField] private Estado estado = Estado.Inativo;
     [SerializeField] private Transform objetivo;
+
+    private NavMeshAgent inimigo;
+    private float sensibilidade = 1f;
 
     private void Start()
     {
         inimigo = GetComponent<NavMeshAgent>();
-        raioAtual = raioBusca;
+        sensibilidade = 1f;
+
+        if (areaDeSomJogador == null)
+        {
+            GameObject jogador = GameObject.FindGameObjectWithTag("Player");
+            if (jogador != null)
+                areaDeSomJogador = jogador.GetComponentInChildren<AreaDeSom>();
+        }
+
+        if (areaDeSomJogador == null)
+            Debug.LogError("[IA_inimigo] Não encontrei um AreaDeSom no jogador (tag Player).", this);
     }
 
     private void Update()
@@ -32,36 +50,26 @@ public class IA_inimigo : MonoBehaviour
         {
             case Estado.Inativo:
 
-                // Aumenta o raio até o tamanho normal em 10 segundos.
-                raioAtual = Mathf.MoveTowards(
-                    raioAtual,
-                    raioBusca,
-                    (raioBusca / 2f / bufferSearchtoIdle) * Time.deltaTime
-                );
+                float taxa = (1f - sensibilidadeEmBusca) / Mathf.Max(0.01f, tempoRecuperacao);
+                sensibilidade = Mathf.MoveTowards(sensibilidade, 1f, taxa * Time.deltaTime);
 
-                // Procura o jogador dentro do raio atual.
-                if (EncontrarPlayer(raioAtual, out Transform player))
+                if (OuveJogador(sensibilidade))
                 {
-                    objetivo = player;
+                    objetivo = areaDeSomJogador.transform;
+                    sensibilidade = sensibilidadeEmBusca;
 
-                    // Diminui o raio pela metade.
-                    raioAtual = raioBusca / 2f;
-
-                    // Vai até a posição onde o jogador foi encontrado.
-                    inimigo.destination = objetivo.position;
+                    inimigo.destination = areaDeSomJogador.Centro;
                     estado = Estado.Procurando;
                 }
                 break;
 
             case Estado.Procurando:
 
-                // Se encontrar o jogador no raio menor, começa a perseguição.
-                if (EncontrarPlayer(raioBusca / 2f, out player))
+                if (OuveJogador(sensibilidadeEmBusca))
                 {
-                    objetivo = player;
+                    objetivo = areaDeSomJogador.transform;
                     estado = Estado.Atacando;
                 }
-                // Verifica se chegou ao destino.
                 else if (!inimigo.pathPending && inimigo.hasPath && inimigo.remainingDistance <= inimigo.stoppingDistance)
                 {
                     inimigo.ResetPath();
@@ -72,7 +80,6 @@ public class IA_inimigo : MonoBehaviour
 
             case Estado.Atacando:
 
-                // Continua seguindo a posição atual do jogador.
                 if (objetivo == null)
                 {
                     inimigo.ResetPath();
@@ -85,34 +92,22 @@ public class IA_inimigo : MonoBehaviour
         }
     }
 
-    private bool EncontrarPlayer(float raio, out Transform player)
+    private bool OuveJogador(float sens)
     {
-        Collider[] colisoes = Physics.OverlapSphere(transform.position, raio);
+        if (areaDeSomJogador == null) return false;
 
-        foreach (Collider col in colisoes)
-        {
-            if (col.CompareTag("Player"))
-            {
-                player = col.transform;
-                return true;
-            }
-        }
+        float alcance = areaDeSomJogador.RaioAtual * sens;
+        if (alcance <= 0f) return false;
 
-        player = null;
-        return false;
+        float distanciaQuadrada = (areaDeSomJogador.Centro - transform.position).sqrMagnitude;
+        return distanciaQuadrada <= alcance * alcance;
     }
 
     private void OnDrawGizmosSelected()
     {
-        float raioVisual = raioBusca;
+        if (!Application.isPlaying || areaDeSomJogador == null) return;
 
-        if (Application.isPlaying)
-        {
-            if (estado == Estado.Inativo)
-                raioVisual = raioAtual;
-            else
-                raioVisual = raioBusca / 2f;
-        }
+        float sens = estado == Estado.Inativo ? sensibilidade : sensibilidadeEmBusca;
 
         if (estado == Estado.Inativo)
             Gizmos.color = Color.green;
@@ -121,9 +116,7 @@ public class IA_inimigo : MonoBehaviour
         else
             Gizmos.color = Color.red;
 
-        Gizmos.DrawWireSphere(
-            transform.position,
-            Mathf.Max(0f, raioVisual)
-        );
+        Gizmos.DrawWireSphere(areaDeSomJogador.Centro, areaDeSomJogador.RaioAtual * sens);
+        Gizmos.DrawLine(transform.position, areaDeSomJogador.Centro);
     }
 }

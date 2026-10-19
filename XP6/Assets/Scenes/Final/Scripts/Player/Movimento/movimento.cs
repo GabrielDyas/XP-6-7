@@ -100,7 +100,9 @@ public class Movimento : MonoBehaviour
 
     private void Start()
     {
-        Maquina.Iniciar(Andando); // estado inicial do diagrama
+        Cursor.lockState = CursorLockMode.Locked; 
+        Cursor.visible = false;
+        Maquina.Iniciar(Andando); 
     }
 
     private void Update()

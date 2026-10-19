@@ -28,6 +28,10 @@ public class AreaDeSom : MonoBehaviour
 
     private float currentRadius;
 
+    // Usados por outros scripts (ex.: a IA dos inimigos) para "ouvir" o jogador
+    public float RaioAtual => currentRadius;
+    public Vector3 Centro => transform.position;
+
     private void Reset()
     {
         rb = GetComponent<Rigidbody>();
