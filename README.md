@@ -8,10 +8,14 @@ Instruções para rodar o projeto em Windows 11/10:
 4. Abra a pasta Game e execute Sunborn.exe
 
 Instruções para rodar o projeto no editor da Unity em Windows 11/10:
+
 O que precisa:
+
 Unity Hub
 Unity editor versão 6000.6.0f1
+
 Hardware:
+
 Teclado e mouse
 
 Sem clonar o repositório diretamente:
