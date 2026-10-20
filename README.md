@@ -2,7 +2,7 @@ Alpha do jogo Sunborn para a matéria de XP6
 
 https://github.com/GabrielDyas/XP-6-7.git
 
-Vídeo técnico da Alpha: https://youtu.be/xQ5kmu001Eo
+Vídeo técnico da Alpha: https://youtu.be/BXqoaakk7Uk
 
 Instruções para rodar o projeto em Windows 11/10:
 1. Abra o repositório do projeto no [github.com](https://github.com/GabrielDyas/XP-6-7.git)
@@ -55,3 +55,5 @@ E: Habilidade Bola de energia (não funcional na build atual)
 Botão esquerdo do mouse/MB1: Atirar
 
 R: Recarregar
+
+AVISO: Ambos os integrantes utilizaram de IA generativa do Chat GPT e Gemini para correção dos códigos
