@@ -11,12 +11,12 @@ Instruções para rodar o projeto no editor da Unity em Windows 11/10:
 
 O que precisa:
 
-Unity Hub
+Unity Hub - 
 Unity editor versão 6000.6.0f1
 
 Hardware:
 
-Teclado e mouse
+Teclado QWERTY e Mouse
 
 Sem clonar o repositório diretamente:
 1. Abra o repositório do projeto no [github.com](https://github.com/GabrielDyas/XP-6-7.git)
@@ -38,10 +38,17 @@ Clonando o repositório via aplicativo:
 
 Instruções para jogar o jogo:
 WASD: Controla o movimento do player
+
 Espaço: Pular e Pulo duplo quando está no ar
+
 Shift + A/S/D: Dash
+
 Shift + W: Correr
+
 Q: Habilidade Vórtice
+
 E: Habilidade Bola de energia (não funcional na build atual)
+
 Botão esquerdo do mouse/MB1: Atirar
+
 R: Recarregar
