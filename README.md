@@ -1,4 +1,7 @@
 Alpha do jogo Sunborn para a matéria de XP6
+
+https://github.com/GabrielDyas/XP-6-7.git
+
 Vídeo técnico da Alpha: https://youtu.be/xQ5kmu001Eo
 
 Instruções para rodar o projeto em Windows 11/10:
