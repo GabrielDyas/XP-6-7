@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2131765987476880218}
   - component: {fileID: 2902113410303228237}
   - component: {fileID: 6684873330742676368}
+  - component: {fileID: 7956672654015359490}
   - component: {fileID: -4472208576294451847}
   - component: {fileID: 7928490821335756976}
   - component: {fileID: 150785382787288881}
@@ -72,8 +73,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3214d9e4000542341b25461130f8bc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IA_inimigo
-  raioBusca: 20
-  bufferSearchtoIdle: 10
+  areaDeSomJogador: {fileID: 0}
+  sensibilidadeEmBusca: 0.5
+  tempoRecuperacao: 10
+  distanciaAtaque: 2
   estado: 0
   objetivo: {fileID: 0}
 --- !u!114 &6684873330742676368
@@ -89,6 +92,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::mainInimigo
   vida: 10
+--- !u!114 &7956672654015359490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4693211715898196975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cbea02ead06f684a82fb9c39cc84225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ataqueInimigo
+  tempoPreparacao: 2
+  duracaoHitbox: 5
+  dano: 5
+  tamanhoHitbox: {x: 3, y: 2, z: 4}
+  distanciaFrente: 2
+  alturaHitbox: 1
+  materialArea: {fileID: 2100000, guid: 7dd176d704f5e2645abdf2cecb21a8a5, type: 2}
 --- !u!54 &-4472208576294451847
 Rigidbody:
   m_ObjectHideFlags: 0

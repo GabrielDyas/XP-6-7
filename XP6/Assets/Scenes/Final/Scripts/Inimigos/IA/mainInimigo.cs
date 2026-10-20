@@ -28,7 +28,7 @@ public class mainInimigo : MonoBehaviour
             corAlterada = !corAlterada;
 
             materialInimigo.color = corAlterada
-                ? Color.red
+                ? Color.gray4
                 : corOriginal;
         }
 

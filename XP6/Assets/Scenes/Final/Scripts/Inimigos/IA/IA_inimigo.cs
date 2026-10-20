@@ -21,21 +21,30 @@ public class IA_inimigo : MonoBehaviour
     [Tooltip("Segundos para a sensibilidade voltar ao máximo enquanto o inimigo está Inativo.")]
     [SerializeField] private float tempoRecuperacao = 10f;
 
+    [Header("Ataque")]
+    [SerializeField] private float distanciaAtaque = 2f;
+
     [Header("Debug")]
     [SerializeField] private Estado estado = Estado.Inativo;
     [SerializeField] private Transform objetivo;
 
     private NavMeshAgent inimigo;
+    private ataqueInimigo ataque;
     private float sensibilidade = 1f;
 
     private void Start()
     {
         inimigo = GetComponent<NavMeshAgent>();
+        ataque = GetComponent<ataqueInimigo>();
         sensibilidade = 1f;
+
+        if (ataque == null)
+            Debug.LogError("[IA_inimigo] Adicione o componente ataqueInimigo.", this);
 
         if (areaDeSomJogador == null)
         {
             GameObject jogador = GameObject.FindGameObjectWithTag("Player");
+
             if (jogador != null)
                 areaDeSomJogador = jogador.GetComponentInChildren<AreaDeSom>();
         }
@@ -50,14 +59,21 @@ public class IA_inimigo : MonoBehaviour
         {
             case Estado.Inativo:
 
-                float taxa = (1f - sensibilidadeEmBusca) / Mathf.Max(0.01f, tempoRecuperacao);
-                sensibilidade = Mathf.MoveTowards(sensibilidade, 1f, taxa * Time.deltaTime);
+                float taxa = (1f - sensibilidadeEmBusca) /
+                             Mathf.Max(0.01f, tempoRecuperacao);
+
+                sensibilidade = Mathf.MoveTowards(
+                    sensibilidade,
+                    1f,
+                    taxa * Time.deltaTime
+                );
 
                 if (OuveJogador(sensibilidade))
                 {
                     objetivo = areaDeSomJogador.transform;
                     sensibilidade = sensibilidadeEmBusca;
 
+                    inimigo.isStopped = false;
                     inimigo.destination = areaDeSomJogador.Centro;
                     estado = Estado.Procurando;
                 }
@@ -70,7 +86,9 @@ public class IA_inimigo : MonoBehaviour
                     objetivo = areaDeSomJogador.transform;
                     estado = Estado.Atacando;
                 }
-                else if (!inimigo.pathPending && inimigo.hasPath && inimigo.remainingDistance <= inimigo.stoppingDistance)
+                else if (!inimigo.pathPending &&
+                         inimigo.hasPath &&
+                         inimigo.remainingDistance <= inimigo.stoppingDistance)
                 {
                     inimigo.ResetPath();
                     objetivo = null;
@@ -82,32 +100,62 @@ public class IA_inimigo : MonoBehaviour
 
                 if (objetivo == null)
                 {
+                    inimigo.isStopped = false;
                     inimigo.ResetPath();
                     estado = Estado.Inativo;
                     break;
                 }
 
-                inimigo.destination = objetivo.position;
+                float distancia = Vector3.Distance(
+                    transform.position,
+                    objetivo.position
+                );
+
+                if (ataque != null && ataque.EmAtaque)
+                {
+                    // Continua parado durante a preparação e o ataque.
+                    inimigo.isStopped = true;
+                }
+                else if (ataque != null && distancia <= distanciaAtaque)
+                {
+                    // Para e inicia o ataque quando chega perto.
+                    inimigo.isStopped = true;
+                    ataque.IniciarAtaque();
+                }
+                else
+                {
+                    // Continua perseguindo enquanto está longe.
+                    inimigo.isStopped = false;
+                    inimigo.destination = objetivo.position;
+                }
                 break;
         }
     }
 
     private bool OuveJogador(float sens)
     {
-        if (areaDeSomJogador == null) return false;
+        if (areaDeSomJogador == null)
+            return false;
 
         float alcance = areaDeSomJogador.RaioAtual * sens;
-        if (alcance <= 0f) return false;
 
-        float distanciaQuadrada = (areaDeSomJogador.Centro - transform.position).sqrMagnitude;
+        if (alcance <= 0f)
+            return false;
+
+        float distanciaQuadrada =
+            (areaDeSomJogador.Centro - transform.position).sqrMagnitude;
+
         return distanciaQuadrada <= alcance * alcance;
     }
 
     private void OnDrawGizmosSelected()
     {
-        if (!Application.isPlaying || areaDeSomJogador == null) return;
+        if (!Application.isPlaying || areaDeSomJogador == null)
+            return;
 
-        float sens = estado == Estado.Inativo ? sensibilidade : sensibilidadeEmBusca;
+        float sens = estado == Estado.Inativo
+            ? sensibilidade
+            : sensibilidadeEmBusca;
 
         if (estado == Estado.Inativo)
             Gizmos.color = Color.green;
@@ -116,7 +164,11 @@ public class IA_inimigo : MonoBehaviour
         else
             Gizmos.color = Color.red;
 
-        Gizmos.DrawWireSphere(areaDeSomJogador.Centro, areaDeSomJogador.RaioAtual * sens);
+        Gizmos.DrawWireSphere(
+            areaDeSomJogador.Centro,
+            areaDeSomJogador.RaioAtual * sens
+        );
+
         Gizmos.DrawLine(transform.position, areaDeSomJogador.Centro);
     }
 }
