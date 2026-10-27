@@ -1,6 +1,3 @@
-
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,28 +10,32 @@ public class armas : MonoBehaviour
     [Header("Referencias Script")]
     [SerializeField] private controleTiro controladorTiro;
 
-    [Header("Municao")]
-    [SerializeField] private int capacidadeCarregador = 10;
+    [Header("Arma equipada")]
+    [SerializeField] private infoArmas dadosArmaEquipada;
+
     private int municaoAtual;
     private bool recarregando = false;
 
-    [UnitHeaderInspectable("Dano")]
-    [SerializeField] public float dano = 5f;
-
     private void Awake()
     {
+        if (dadosArmaEquipada == null)
+        {
+            Debug.LogError("Dados da arma não definidos no Inspector.", this);
+            enabled = false;
+            return;
+        }
+
         // Procura o controleTiro neste mesmo GameObject,
         // caso nenhuma referência tenha sido definida no Inspector.
         if (controladorTiro == null)
         {
-            Debug.Log("controladorTiro não definido no inspetor");
             controladorTiro = GetComponent<controleTiro>();
         }
 
-        // Começa o jogo com o carregador cheio.
-        municaoAtual = capacidadeCarregador;
+        // Começa com o carregador cheio.
+        municaoAtual = dadosArmaEquipada.municao;
 
-        Debug.Log("Munição total: " + capacidadeCarregador);
+        Debug.Log("Munição total: " + dadosArmaEquipada.municao);
     }
 
     private void OnEnable()
@@ -57,36 +58,37 @@ public class armas : MonoBehaviour
 
     private void Update()
     {
-        if (controladorTiro == null)
+        if (dadosArmaEquipada == null || controladorTiro == null)
+            return;
+
+        if (acaoRecarregar != null &&
+            acaoRecarregar.action.triggered)
         {
-            Debug.Log("referência do controladorTiro nula");
+            if (!recarregando)
+                Recarregar();
+            else
+                Debug.Log("Já está recarregando.");
+
             return;
         }
 
-        // Verifica primeiro se o jogador pediu para recarregar.
-        if (acaoRecarregar != null && acaoRecarregar.action.triggered && !recarregando) {
-            Recarregar();
+        if (acaoAtirar == null || !acaoAtirar.action.triggered)
+            return;
+
+        if (recarregando)
+        {
+            Debug.Log("Não dá para atirar, recarregando.");
             return;
         }
-        if (acaoRecarregar.action.triggered && recarregando) {
-            Debug.Log("Já está recarregando");
-            
-        }
-        if (acaoAtirar.action.triggered)
+
+        if (municaoAtual > 0)
         {
-            if (recarregando) 
-            {
-                Debug.Log("Não dá pra atirar, recarregando");
-            }
-            if (municaoAtual > 0f)
-            {
-                // Consome uma bala e executa o disparo.
-                municaoAtual--;
+            // Consome uma bala e executa o disparo.
+            municaoAtual--;
 
-                controladorTiro.Atirar(dano);
+            controladorTiro.Atirar(dadosArmaEquipada.dano);
 
-                Debug.Log("Munição restante: " + municaoAtual);
-            }
+            Debug.Log("Munição restante: " + municaoAtual);
         }
     }
 
@@ -95,8 +97,7 @@ public class armas : MonoBehaviour
         if (recarregando)
             return;
 
-        // Não recarrega se o carregador já estiver cheio.
-        if (municaoAtual >= capacidadeCarregador)
+        if (municaoAtual >= dadosArmaEquipada.municao)
         {
             Debug.Log("O carregador já está cheio.");
             return;
@@ -104,8 +105,8 @@ public class armas : MonoBehaviour
 
         recarregando = true;
 
-        // Recarga instantânea: enche o carregador imediatamente.
-        municaoAtual = capacidadeCarregador;
+        // Recarga instantânea.
+        municaoAtual = dadosArmaEquipada.municao;
 
         Debug.Log("Arma recarregada! Munição: " + municaoAtual);
 
