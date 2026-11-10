@@ -104,12 +104,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cbea02ead06f684a82fb9c39cc84225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ataqueInimigo
-  tempoPreparacao: 2
-  duracaoHitbox: 2
+  tempoPreparacao: 1
+  duracaoHitbox: 1
   dano: 5
-  tamanhoHitbox: {x: 3, y: 2, z: 4}
+  tamanhoHitbox: {x: 2, y: 1, z: 4}
   distanciaFrente: 2
-  alturaHitbox: 1
+  alturaHitbox: 0
   materialArea: {fileID: 2100000, guid: 7dd176d704f5e2645abdf2cecb21a8a5, type: 2}
 --- !u!54 &-4472208576294451847
 Rigidbody:
