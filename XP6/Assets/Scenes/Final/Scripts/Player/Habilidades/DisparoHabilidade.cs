@@ -5,11 +5,15 @@ public class DisparoHabilidade : MonoBehaviour
 {
     [Header("Referências")]
     [SerializeField] private GameObject pontoDeDisparo;
-    [SerializeField] private GameObject projetil; // prefab com Projetil + Rigidbody + Collider
+    [SerializeField] private GameObject projetil;
 
     [Header("Habilidades (efeito criado no impacto)")]
     [SerializeField] private GameObject habilidadeExplosaoPrefab; // Habilidade1 (explosão)
     [SerializeField] private GameObject habilidadeVorticePrefab; // Habilidade2 (vórtice)
+
+    [Header("Tempo de recarga (segundos)")]
+    [SerializeField] private float recargaExplosao = 10f;
+    [SerializeField] private float recargaVortice = 10f;
 
     [Header("Projétil")]
     [SerializeField] private float velocidadeDoProjetil = 10f;
@@ -24,13 +28,20 @@ public class DisparoHabilidade : MonoBehaviour
     private Collider[] colidersDoDono;
     private Transform cam;
 
+    // Instante do jogo (Time.time) a partir do qual cada habilidade pode ser usada de novo
+    private float proximoUsoExplosao;
+    private float proximoUsoVortice;
+
+    // Segundos que faltam para a habilidade ficar pronta (0 = pronta). Útil para a UI.
+    public float RecargaRestanteExplosao => Mathf.Max(0f, proximoUsoExplosao - Time.time);
+    public float RecargaRestanteVortice => Mathf.Max(0f, proximoUsoVortice - Time.time);
+
     private void Awake()
     {
         input = new InputSystem_Actions();
         colidersDoDono = GetComponentsInChildren<Collider>();
         cam = Camera.main != null ? Camera.main.transform : null;
 
-        // Avisa no Console exatamente o que está faltando
         bool ok = true;
         if (pontoDeDisparo == null)
         {
@@ -69,14 +80,22 @@ public class DisparoHabilidade : MonoBehaviour
 
     private void OnDestroy() => input.Dispose();
 
-    private void AoHabilidade1(InputAction.CallbackContext ctx) => Disparar(habilidadeExplosaoPrefab);
-    private void AoHabilidade2(InputAction.CallbackContext ctx) => Disparar(habilidadeVorticePrefab);
+    private void AoHabilidade1(InputAction.CallbackContext ctx) =>
+        Disparar(habilidadeExplosaoPrefab, recargaExplosao, ref proximoUsoExplosao);
 
-    // Uma única lógica para todas as habilidades: só muda o efeito do impacto
-    private void Disparar(GameObject efeito)
+    private void AoHabilidade2(InputAction.CallbackContext ctx) =>
+        Disparar(habilidadeVorticePrefab, recargaVortice, ref proximoUsoVortice);
+
+    private void Disparar(GameObject efeito, float recarga, ref float proximoUso)
     {
+        // Ainda em recarga: ignora o aperto
+        if (Time.time < proximoUso) return;
+
         if (efeito == null)
             Debug.LogWarning("[Disparo] Esta habilidade está sem prefab de efeito; nada acontece no impacto.", this);
+
+        // A recarga só começa quando o disparo realmente acontece
+        proximoUso = Time.time + recarga;
 
         Transform ponto = pontoDeDisparo.transform;
         Vector3 direcao = CalcularDirecaoDaMira(ponto.position);
@@ -85,8 +104,7 @@ public class DisparoHabilidade : MonoBehaviour
         obj.GetComponent<Projetil>().Lancar(efeito, direcao * velocidadeDoProjetil, colidersDoDono);
     }
 
-    // Raio do centro da tela -> ponto que o jogador está olhando.
-    // A direção do tiro vai do ponto de disparo até esse ponto.
+
     private Vector3 CalcularDirecaoDaMira(Vector3 origem)
     {
         if (cam == null) return pontoDeDisparo.transform.forward;
@@ -99,7 +117,7 @@ public class DisparoHabilidade : MonoBehaviour
         float menor = float.MaxValue;
         for (int i = 0; i < n; i++)
         {
-            if (hits[i].collider.transform.IsChildOf(transform)) continue; // ignora o próprio jogador
+            if (hits[i].collider.transform.IsChildOf(transform)) continue;
             if (hits[i].distance < menor)
             {
                 menor = hits[i].distance;
@@ -109,7 +127,6 @@ public class DisparoHabilidade : MonoBehaviour
 
         Vector3 direcao = alvo - origem;
 
-        // Alvo atrás do ponto de disparo (parede colada): usa a direção da câmera
         if (Vector3.Dot(direcao, cam.forward) <= 0f) return cam.forward;
 
         return direcao.normalized;

@@ -34,6 +34,7 @@ public class mainInimigo : MonoBehaviour
 
         if (vida <= 0f)
         {
+            Caca.AcumularPontos(Random.Range(10, 21));
             Destroy(gameObject);
         }
     }

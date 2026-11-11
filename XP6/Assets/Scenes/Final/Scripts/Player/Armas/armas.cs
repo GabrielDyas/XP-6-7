@@ -112,4 +112,18 @@ public class armas : MonoBehaviour
 
         recarregando = false;
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    public float GetMunicao()
+    {
+        return municaoAtual;
+    }
+
+    public float GetCapacidadeCarregador()
+    {
+        return capacidadeCarregador;
+    }
+}
+>>>>>>> Stashed changes

@@ -28,7 +28,6 @@ public class AreaDeSom : MonoBehaviour
 
     private float currentRadius;
 
-    // Usados por outros scripts (ex.: a IA dos inimigos) para "ouvir" o jogador
     public float RaioAtual => currentRadius;
     public Vector3 Centro => transform.position;
 
@@ -49,17 +48,13 @@ public class AreaDeSom : MonoBehaviour
     {
         if (rb == null) return;
 
-        // Obtém a velocidade linear atual do Rigidbody
-        // (Nota: em versões mais novas do Unity 2023+, pode-se usar rb.linearVelocity)
+
         float currentSpeed = rb.linearVelocity.magnitude;
 
-        // Calcula a proporção da velocidade entre 0 e 1
         float speedRatio = Mathf.Clamp01(currentSpeed / maxSpeed);
 
-        // Mapeia linearmente a velocidade para o raio correspondente
         float targetRadius = Mathf.Lerp(minRadius, maxRadius, speedRatio);
 
-        // Interpola para suavizar a transição do tamanho
         if (smoothSpeed > 0f)
         {
             currentRadius = Mathf.Lerp(currentRadius, targetRadius, Time.deltaTime * smoothSpeed);
@@ -69,14 +64,12 @@ public class AreaDeSom : MonoBehaviour
             currentRadius = targetRadius;
         }
 
-        // Aplica o raio na escala do objeto visual (Diâmetro = Raio * 2)
         if (areaVisual != null)
         {
             float diameter = currentRadius * 2f;
             areaVisual.localScale = new Vector3(diameter, areaVisual.localScale.y, diameter);
         }
 
-        // Aplica o raio no SphereCollider
         if (areaCollider != null)
         {
             areaCollider.radius = currentRadius;
@@ -85,7 +78,6 @@ public class AreaDeSom : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // Desenha a área no Editor do Unity para facilitar o ajuste sem dar Play
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, Application.isPlaying ? currentRadius : minRadius);
     }
