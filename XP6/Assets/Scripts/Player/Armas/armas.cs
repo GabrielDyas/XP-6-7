@@ -30,8 +30,8 @@ public class armas : MonoBehaviour
 
         if (dadosArmaEquipada.automatica && dadosArmaEquipada.cadencia <= 0)
         {
-            Debug.LogError("A cadência da arma automática deve ser maior que zero.", this);
-            enabled = false;
+            Debug.LogError("A cadência da arma automática deve ser maior que zero.", this); 
+            enabled = false; // tá aqui pra impedir divir por zero no calculo da cadência
             return;
         }
 

@@ -7,6 +7,8 @@ public class controleTiro : MonoBehaviour
     public float distanciaMaxima = 100f;
     public float vidaDoRaioSegundos = 1f;
 
+    [SerializeField] private bool debug = false;
+
     private void Start()
     {
         cameraPrincipal = Camera.main;
@@ -24,8 +26,10 @@ public class controleTiro : MonoBehaviour
 
         if (Physics.Raycast(raioDoTiro, out RaycastHit hit, distanciaMaxima))
         {
-            Debug.Log("Acertou: " + hit.collider.gameObject.name);
-
+            if (debug)
+            {
+                Debug.Log("Acertou: " + hit.collider.gameObject.name);
+            }
             mainInimigo inimigo = hit.collider.GetComponentInParent<mainInimigo>();
 
             if (inimigo != null)

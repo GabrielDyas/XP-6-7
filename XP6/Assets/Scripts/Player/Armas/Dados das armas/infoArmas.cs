@@ -6,10 +6,14 @@ using UnityEngine;
 )]
 public class infoArmas : ScriptableObject
 {
-    [Header("Informações")]
+    [Header("Geral")]
     public string nome;
-    public bool automatica;
-    public int cadencia;
-    public int municao;
+    [Header("Modelo")]
+    public GameObject modeloArma; 
+    public Vector3 posicaoNaTela = Vector3.zero; 
+    [Header("Balanceamento")]
     public float dano;
+    public int cadencia;
+    public bool automatica;
+    public int municao;
 }
