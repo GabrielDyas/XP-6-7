@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: M9
   m_EditorClassIdentifier: Assembly-CSharp::infoArmas
   nome: M9
-  automatica: 0
-  cadencia: 200
-  municao: 15
+  modeloArma: {fileID: 8659405533438189552, guid: 527dd6b305f1acb4eb6cbfc136cb79ff, type: 3}
+  posicaoNaTela: {x: 0, y: 0, z: 0}
   dano: 10
+  cadencia: 200
+  automatica: 0
+  municao: 15

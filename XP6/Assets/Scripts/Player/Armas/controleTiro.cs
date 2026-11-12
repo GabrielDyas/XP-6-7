@@ -37,13 +37,10 @@ public class controleTiro : MonoBehaviour
                 inimigo.tomarDano(dano);
             }
         }
-
-        // Desenha o raio vermelho durante o tempo definido
-        Debug.DrawRay(
-            raioDoTiro.origin,
-            raioDoTiro.direction * distanciaMaxima,
-            Color.red,
-            vidaDoRaioSegundos
-        );
+        if (debug)
+        {
+            // Desenha o raio vermelho no editor
+            Debug.DrawRay(raioDoTiro.origin,raioDoTiro.direction * distanciaMaxima,Color.red,vidaDoRaioSegundos);
+        }
     }
 }

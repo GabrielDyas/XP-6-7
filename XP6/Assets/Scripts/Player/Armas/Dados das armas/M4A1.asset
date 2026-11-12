@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::infoArmas
   nome: M4A1
   modeloArma: {fileID: 8659405533438189552, guid: 527dd6b305f1acb4eb6cbfc136cb79ff, type: 3}
-  posicaoNaTela: {x: 0, y: 0, z: 0}
+  posicaoNaTela: {x: 0.4, y: -0.35, z: 0.81}
   dano: 5
   cadencia: 800
   automatica: 1
   municao: 30
+  atirarSFX: []
+  recarregarSFX: []

@@ -10,6 +10,8 @@ public class armas : MonoBehaviour
 
     [Header("Referencias Script")]
     [SerializeField] private controleTiro controladorTiro;
+    [SerializeField] private controleArmaVisual controladorVisual;
+    [SerializeField] private controleSomArma controladorSom;
 
     [Header("Arma equipada")]
     [SerializeField] private infoArmas dadosArmaEquipada;
@@ -38,6 +40,34 @@ public class armas : MonoBehaviour
         if (controladorTiro == null)
         {
             controladorTiro = GetComponent<controleTiro>();
+        }
+        // procura o controlador visual caso não tenha referência
+        if (controladorVisual == null)
+        {
+            controladorVisual = GetComponent<controleArmaVisual>();
+        }
+
+        // envia os dados da arma para o controlador visual
+        if (controladorVisual != null)
+        {
+            controladorVisual.Equipar(dadosArmaEquipada);
+
+            // Obtém o AudioSource do modelo instanciado.
+            if (controladorSom != null)
+            {
+                AudioSource audioSourceArma = controladorVisual.ObterAudioSource();
+                controladorSom.ConfigurarAudioSource(audioSourceArma);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Controlador visual da arma não encontrado.", this);
+        }
+
+        // Verifica se o controlador de som foi atribuído.
+        if (controladorSom == null && debug)
+        {
+            Debug.LogWarning("Controlador de som não definido no Inspector.", this);
         }
 
         municaoAtual = dadosArmaEquipada.municao;
@@ -119,6 +149,7 @@ public class armas : MonoBehaviour
             municaoAtual--;
 
             controladorTiro.Atirar(dadosArmaEquipada.dano);
+            controladorSom.TocarDisparo(dadosArmaEquipada);
 
             // NOVO: calcula o intervalo entre os disparos automáticos.
             if (dadosArmaEquipada.automatica)
@@ -148,7 +179,7 @@ public class armas : MonoBehaviour
         }
 
         recarregando = true;
-
+        controladorSom.TocarRecarga(dadosArmaEquipada);
         municaoAtual = dadosArmaEquipada.municao;
         if (debug)
         {
