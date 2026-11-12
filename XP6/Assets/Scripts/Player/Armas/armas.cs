@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,6 +16,7 @@ public class armas : MonoBehaviour
 
     private int municaoAtual;
     private bool recarregando = false;
+    private float proximoDisparo;
     [SerializeField] private bool debug = false;
 
     private void Awake()
@@ -26,14 +28,18 @@ public class armas : MonoBehaviour
             return;
         }
 
-        // Procura o controleTiro neste mesmo GameObject,
-        // caso nenhuma referência tenha sido definida no Inspector.
+        if (dadosArmaEquipada.automatica && dadosArmaEquipada.cadencia <= 0)
+        {
+            Debug.LogError("A cadência da arma automática deve ser maior que zero.", this);
+            enabled = false;
+            return;
+        }
+
         if (controladorTiro == null)
         {
             controladorTiro = GetComponent<controleTiro>();
         }
 
-        // Começa com o carregador cheio.
         municaoAtual = dadosArmaEquipada.municao;
         if (debug)
         {
@@ -64,8 +70,7 @@ public class armas : MonoBehaviour
         if (dadosArmaEquipada == null || controladorTiro == null)
             return;
 
-        // Verifica primeiro se o jogador pediu para recarregar.
-        if (acaoRecarregar != null &&acaoRecarregar.action.triggered)
+        if (acaoRecarregar != null && acaoRecarregar.action.triggered)
         {
             if (!recarregando)
             {
@@ -78,7 +83,22 @@ public class armas : MonoBehaviour
             return;
         }
 
-        if (acaoAtirar == null || !acaoAtirar.action.triggered)
+        if (acaoAtirar == null)
+            return;
+
+        // ALTERADO: verifica o input dependendo do tipo de arma.
+        bool solicitouDisparo;
+
+        if (dadosArmaEquipada.automatica)
+        {
+            solicitouDisparo = acaoAtirar.action.IsPressed();
+        }
+        else
+        {
+            solicitouDisparo = acaoAtirar.action.triggered;
+        }
+
+        if (!solicitouDisparo)
             return;
 
         if (recarregando)
@@ -87,22 +107,32 @@ public class armas : MonoBehaviour
             {
                 Debug.Log("Não dá para atirar, recarregando.");
             }
-
             return;
         }
 
+        // NOVO: impede disparos automáticos antes do intervalo permitido.
+        if (dadosArmaEquipada.automatica && Time.time < proximoDisparo)
+            return;
+
         if (municaoAtual > 0)
         {
-            // Consome uma bala e executa o disparo.
             municaoAtual--;
+
             controladorTiro.Atirar(dadosArmaEquipada.dano);
+
+            // NOVO: calcula o intervalo entre os disparos automáticos.
+            if (dadosArmaEquipada.automatica)
+            {
+                float intervaloEntreDisparos = 60f / dadosArmaEquipada.cadencia;
+                proximoDisparo = Time.time + intervaloEntreDisparos;
+            }
+
             if (debug)
             {
                 Debug.Log("Munição restante: " + municaoAtual);
             }
         }
     }
-
     private void Recarregar()
     {
         if (recarregando)
@@ -119,7 +149,6 @@ public class armas : MonoBehaviour
 
         recarregando = true;
 
-        // Recarga instantânea.
         municaoAtual = dadosArmaEquipada.municao;
         if (debug)
         {
@@ -127,8 +156,6 @@ public class armas : MonoBehaviour
         }
         recarregando = false;
     }
-
-
 
     public float GetMunicao()
     {
@@ -140,4 +167,3 @@ public class armas : MonoBehaviour
         return dadosArmaEquipada.municao;
     }
 }
-

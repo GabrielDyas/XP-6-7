@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b33511ca6542bd40b7bcc407d45abe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::mainInimigo
-  vida: 10
+  vida: 50
 --- !u!114 &7956672654015359490
 MonoBehaviour:
   m_ObjectHideFlags: 0
