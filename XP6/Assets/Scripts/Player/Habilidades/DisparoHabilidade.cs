@@ -88,6 +88,9 @@ public class DisparoHabilidade : MonoBehaviour
 
     private void Disparar(GameObject efeito, float recarga, ref float proximoUso)
     {
+        // Nas telas de início e fim não dispara
+        if (ControladorHud.instancia != null && !ControladorHud.instancia.JogoAtivo) return;
+
         // Ainda em recarga: ignora o aperto
         if (Time.time < proximoUso) return;
 

@@ -92,6 +92,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::mainInimigo
   vida: 10
+  nomeTipoInimigo: Inimigo base
+  CH: {fileID: 6465558787759108721, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
 --- !u!114 &7956672654015359490
 MonoBehaviour:
   m_ObjectHideFlags: 0

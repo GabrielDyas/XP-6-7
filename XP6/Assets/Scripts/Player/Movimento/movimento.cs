@@ -5,19 +5,19 @@ public class Movimento : MonoBehaviour
 {
     [Header("Movimento")]
     [SerializeField] private float velocidade = 5f;
-    [SerializeField] private float multiplicadorCorrida = 1.5f;     
-    [SerializeField] private float multiplicadorAgachado = 0.5f;  
+    [SerializeField] private float multiplicadorCorrida = 1.5f;
+    [SerializeField] private float multiplicadorAgachado = 0.5f;
 
     [Header("Pulo")]
     [SerializeField] private float forcaDoPulo = 5f;
 
     [Header("Dash")]
-    [SerializeField] private float dashForce = 10f;     
-    [SerializeField] private float dashDuracao = 0.2f;  
+    [SerializeField] private float dashForce = 10f;
+    [SerializeField] private float dashDuracao = 0.2f;
     [SerializeField] private float dashCooldown = 1f;
 
     [Header("Chão")]
-    [SerializeField] private Collider colliderDoPe; 
+    [SerializeField] private Collider colliderDoPe;
     [SerializeField] private LayerMask terreno;
     [SerializeField] private float distanciaChao = 0.1f;
 
@@ -94,19 +94,22 @@ public class Movimento : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked; 
-        Cursor.visible = false;
-        Maquina.Iniciar(Andando); 
+        Maquina.Iniciar(Andando);
     }
 
     private void Update()
     {
+        // Nas telas de início e fim o jogador não reage ao input
+        if (ControladorHud.instancia != null && !ControladorHud.instancia.JogoAtivo)
+            return;
+
         Maquina.Atual.AtualizarLogica();
         Girar();
     }
 
     private void FixedUpdate()
     {
+        // O cursor agora é controlado pelo ControladorHud
         Maquina.Atual.AtualizarFisica();
     }
 

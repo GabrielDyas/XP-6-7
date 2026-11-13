@@ -7,6 +7,7 @@ public class mainInimigo : MonoBehaviour
 
     [Header("Configuração de Drop")]
     [SerializeField] private string nomeTipoInimigo = "Inimigo base";
+    [SerializeField] private ControladorHud CH;
 
     private Material materialInimigo;
     private Color corOriginal;
@@ -65,7 +66,12 @@ public class mainInimigo : MonoBehaviour
                 );
             }
 
+            if(CH != null)
+            {
+                CH.FimGame();
+            }
             Destroy(gameObject);
+            
         }
     }
 }
