@@ -11,10 +11,17 @@ public class Movimento : MonoBehaviour
     [Header("Pulo")]
     [SerializeField] private float forcaDoPulo = 5f;
 
+    [Header("Gravidade no ar")]
+    [Tooltip("Gravidade que o jogador sente no ar (valor positivo). 6 = o valor antigo do projeto. " +
+             "Os outros objetos continuam usando a gravidade global (Physics.gravity).")]
+    [SerializeField] private float gravidadeNoAr = 6f;
+
     [Header("Dash")]
     [SerializeField] private float dashForce = 10f;
     [SerializeField] private float dashDuracao = 0.2f;
     [SerializeField] private float dashCooldown = 1f;
+    [Tooltip("Se ligado, o dash feito no ar não perde altura (a velocidade vertical é zerada durante o dash).")]
+    [SerializeField] private bool dashCongelaAltura = false;
 
     [Header("Chão")]
     [SerializeField] private Collider colliderDoPe;
@@ -27,6 +34,7 @@ public class Movimento : MonoBehaviour
     public float MultiplicadorAgachado => multiplicadorAgachado;
     public float DashForce => dashForce;
     public float DashDuracao => dashDuracao;
+    public bool DashCongelaAltura => dashCongelaAltura;
 
     public InputSystem_Actions Controles { get; private set; }
     public Rigidbody Rb { get; private set; }
@@ -55,7 +63,7 @@ public class Movimento : MonoBehaviour
         && InputMovimento.y <= 0.1f
         && Time.time >= proximoDash;
 
-    public bool QuerDashCorrendo =>
+    public bool QuerDashQualquerDirecao =>
         Controles.Player.Sprint.WasPressedThisFrame()
         && InputMovimento.sqrMagnitude > 0.01f
         && Time.time >= proximoDash;
@@ -132,6 +140,21 @@ public class Movimento : MonoBehaviour
     {
         Vector3 v = Rb.linearVelocity;
         Rb.linearVelocity = new Vector3(v.x, forcaDoPulo, v.z);
+    }
+
+    // Soma a diferença entre a gravidade global e a desejada no ar.
+    // Ex.: global -9.81 e gravidadeNoAr 6 -> soma +3.81 para cima, resultando em -6.
+    // ForceMode.Acceleration ignora a massa do Rigidbody.
+    public void AplicarGravidadeNoAr()
+    {
+        float extra = -gravidadeNoAr - Physics.gravity.y;
+        Rb.AddForce(Vector3.up * extra, ForceMode.Acceleration);
+    }
+
+    public void ZerarVelocidadeVertical()
+    {
+        Vector3 v = Rb.linearVelocity;
+        Rb.linearVelocity = new Vector3(v.x, 0f, v.z);
     }
 
     public void IniciarCooldownDash() => proximoDash = Time.time + dashCooldown;

@@ -25,7 +25,7 @@ public class EstadoCorrendo : EstadoBase
     {
         if (!jogador.EstaNoChao())              { maquina.Trocar(jogador.Caindo); return; }
         if (Entrada.Jump.WasPressedThisFrame()) { maquina.Trocar(jogador.Pulo);   return; }
-        if (jogador.QuerDashCorrendo)           { maquina.Trocar(jogador.Dash);   return; }
+        if (jogador.QuerDashQualquerDirecao)           { maquina.Trocar(jogador.Dash);   return; }
 
 
         if (jogador.InputMovimento.sqrMagnitude < 0.01f)
@@ -59,12 +59,14 @@ public class EstadoDash : EstadoBase
 {
     private Vector3 direcao;
     private float tempo;
+    private bool comecouNoAr;
 
     public EstadoDash(Movimento j, MaquinaDeEstados m) : base(j, m) { }
 
     public override void Entrar()
     {
         tempo = 0f;
+        comecouNoAr = !jogador.EstaNoChao();
         direcao = jogador.DirecaoRelativaACamera(jogador.InputMovimento);
         if (direcao == Vector3.zero) direcao = jogador.transform.forward;
         jogador.IniciarCooldownDash();
@@ -72,14 +74,35 @@ public class EstadoDash : EstadoBase
 
     public override void AtualizarLogica()
     {
-        if (Entrada.Jump.WasPressedThisFrame()) { maquina.Trocar(jogador.Pulo); return; }
+        if (Entrada.Jump.WasPressedThisFrame())
+        {
+            // No chão: pulo normal. No ar: só se o pulo extra ainda não foi usado.
+            if (jogador.EstaNoChao())
+            {
+                maquina.Trocar(jogador.Pulo);
+                return;
+            }
+            if (!jogador.PuloNoArUsado)
+            {
+                jogador.PuloNoArUsado = true;
+                maquina.Trocar(jogador.Pulo);
+                return;
+            }
+        }
 
         tempo += Time.deltaTime;
         if (tempo >= jogador.DashDuracao)       { maquina.Trocar(jogador.Caindo); return; }
     }
 
-    public override void AtualizarFisica() =>
+    public override void AtualizarFisica()
+    {
         jogador.DefinirVelocidadeHorizontal(direcao * jogador.DashForce);
+
+        if (comecouNoAr && jogador.DashCongelaAltura)
+            jogador.ZerarVelocidadeVertical();   // dash reto no ar, sem perder altura
+        else
+            jogador.AplicarGravidadeNoAr();
+    }
 
     public override void Sair() =>
         jogador.DefinirVelocidadeHorizontal(direcao * jogador.Velocidade);
@@ -111,6 +134,13 @@ public class EstadoCaindo : EstadoBase
             return;
         }
 
+        // Dash no ar, em qualquer direção (no ar não existe corrida)
+        if (jogador.QuerDashQualquerDirecao)
+        {
+            maquina.Trocar(jogador.Dash);
+            return;
+        }
+
         if (jogador.EstaNoChao() && jogador.Rb.linearVelocity.y <= 0.1f)
         {
             jogador.PuloNoArUsado = false;
@@ -118,4 +148,6 @@ public class EstadoCaindo : EstadoBase
             return;
         }
     }
+
+    public override void AtualizarFisica() => jogador.AplicarGravidadeNoAr();
 }
