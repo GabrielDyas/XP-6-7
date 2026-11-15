@@ -12,17 +12,13 @@ public class mainPlayer : MonoBehaviour
 
     public void tomarDano(float dano)
     {
-        if (morreu)
-            return;
 
         vida -= dano;
 
         if (vida <= 0f)
         {
             morreu = true;
-
-            Scene cenaAtual = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(cenaAtual.buildIndex);
+            ControladorHud.instancia.EndGame();
         }
     }
 
