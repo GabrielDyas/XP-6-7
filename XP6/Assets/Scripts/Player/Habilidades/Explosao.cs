@@ -17,7 +17,7 @@ public class Explosao : MonoBehaviour
         foreach (Collider alvo in alvos)
         {
             if (!alvo.CompareTag("Inimigo")) continue;
-
+            Debug.Log("Acertou");
             Rigidbody rb = alvo.attachedRigidbody;
             if (rb == null || !jaAtingidos.Add(rb)) continue;
 

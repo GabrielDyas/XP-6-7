@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7956672654015359490}
   - component: {fileID: -4472208576294451847}
   - component: {fileID: 7928490821335756976}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: inimigo
   m_TagString: Inimigo
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::mainInimigo
   vida: 10
   nomeTipoInimigo: Inimigo base
-  CH: {fileID: 0}
+  finalizaJogoAoMorrer: 0
 --- !u!114 &7956672654015359490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,6 +211,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 0c4fea1eafa977f40985e039896452b8, type: 3}
       propertyPath: m_Name
       value: Javali
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0c4fea1eafa977f40985e039896452b8, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Caca : MonoBehaviour
 {
+    public GameObject player;
     public static int valorAlvo = 100;
     public static int valorAtual = 0;
 
@@ -40,5 +41,7 @@ public class Caca : MonoBehaviour
         // Só o inimigo invocado pela Caça encerra o jogo ao morrer
         if (especial.TryGetComponent(out mainInimigo inimigo))
             inimigo.MarcarComoEspecial();
+            especial.TryGetComponent(out IA_inimigo iaInimigo);
+            iaInimigo.objetivo = player.transform;
     }
 }

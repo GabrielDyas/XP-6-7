@@ -26,7 +26,7 @@ public class IA_inimigo : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private Estado estado = Estado.Inativo;
-    [SerializeField] private Transform objetivo;
+    [SerializeField] public Transform objetivo;
 
     private NavMeshAgent inimigo;
     private ataqueInimigo ataque;
@@ -147,6 +147,19 @@ public class IA_inimigo : MonoBehaviour
 
         return distanciaQuadrada <= alcance * alcance;
     }
+    #region Comando externo
+    /// <summary>Chamado por outro script (ex.: ao levar dano) para o inimigo perseguir o jogador na hora.</summary>
+    public void Alertar()
+    {
+        if (areaDeSomJogador == null)
+            return;
+
+        objetivo = areaDeSomJogador.transform;
+        inimigo.isStopped = false;
+        inimigo.destination = areaDeSomJogador.Centro;
+        estado = Estado.Atacando;
+    }
+    #endregion
 
     private void OnDrawGizmosSelected()
     {
