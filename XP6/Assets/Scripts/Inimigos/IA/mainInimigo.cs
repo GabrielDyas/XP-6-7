@@ -63,7 +63,7 @@ public class mainInimigo : MonoBehaviour
         }
 
         if (finalizaJogoAoMorrer && ControladorHud.instancia != null)
-            ControladorHud.instancia.FimGame();
+            ControladorHud.instancia.EndGame();
 
         Destroy(gameObject);
     }

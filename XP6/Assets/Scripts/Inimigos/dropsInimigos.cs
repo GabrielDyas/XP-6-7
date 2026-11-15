@@ -213,16 +213,16 @@ public class dropsInimigos : MonoBehaviour
 
             return;
         }
-
+        /*
         Instantiate(
             itemCacaObj,
             posicao + deslocamentoDrop,
             Quaternion.identity
-        );
+        );*/
 
         if (debug)
         {
-            Debug.Log("Item de Caça instanciado.");
+            Debug.Log("Item de Caça não implementado.");
         }
     }
 

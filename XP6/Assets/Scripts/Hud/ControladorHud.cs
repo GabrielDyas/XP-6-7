@@ -127,7 +127,7 @@ public class ControladorHud : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    public void FimGame()
+    public void EndGame()
     {
         if (!iniciado)
             return;
