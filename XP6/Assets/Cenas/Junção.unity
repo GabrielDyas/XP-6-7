@@ -1007,7 +1007,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 251456509}
-  - component: {fileID: 251456510}
   - component: {fileID: 251456511}
   - component: {fileID: 251456512}
   m_Layer: 0
@@ -1038,44 +1037,6 @@ Transform:
   - {fileID: 708081336}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &251456510
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 251456508}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af24060e8ada71c4a93f28d59a2484be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ControladorHud
-  arma: {fileID: 1367573654}
-  habilidades: {fileID: 1367573655}
-  Inicio: {fileID: 0}
-  FimDeJogo: {fileID: 0}
-  Game: {fileID: 0}
-  pularInicioAoReiniciar: 1
-  Armas: {fileID: 0}
-  textoMunicao: {fileID: 416783670}
-  Habilidades: {fileID: 0}
-  explosao:
-    nome: "Explos\xE3o"
-    icone: {fileID: -5243387476363503138, guid: 19b8eade1e736014e98cddad1b6997f1, type: 3}
-    imagem: {fileID: 0}
-    preenchimento: {fileID: 0}
-    recargaTotal: 0
-    emRecarga: 0
-  vortice:
-    nome: "V\xF3rtice"
-    icone: {fileID: -4353681608776064714, guid: 2b6a491b209726340b4d6a97e9170a55, type: 3}
-    imagem: {fileID: 0}
-    preenchimento: {fileID: 0}
-    recargaTotal: 0
-    emRecarga: 0
-  corPronta: {r: 0.075834215, g: 1, b: 0, a: 1}
-  corEscurecida: {r: 0.25, g: 0.25, b: 0.25, a: 0.85}
-  iniciado: 0
 --- !u!114 &251456511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1976,17 +1937,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a521589dd4abb4047b4158006013a112, type: 3}
   m_PrefabInstance: {fileID: 1029546525}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &416783670 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7323105644507865766, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
-  m_PrefabInstance: {fileID: 1342558609042444465}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &418869032 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a521589dd4abb4047b4158006013a112, type: 3}
@@ -11241,8 +11191,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5992349763829133049, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2112404983}
+    - target: {fileID: 5992349763829133049, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5992349763829133049, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReiniciarJogo
+      objectReference: {fileID: 0}
+    - target: {fileID: 5992349763829133049, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ControladorHud, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5992349763829133049, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6465558787759108721, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
       propertyPath: Game

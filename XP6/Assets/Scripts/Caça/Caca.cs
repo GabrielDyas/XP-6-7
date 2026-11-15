@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class Caca : MonoBehaviour
@@ -12,9 +11,6 @@ public class Caca : MonoBehaviour
     [SerializeField] private GameObject inimigoEspecial;
     [SerializeField] private GameObject pontoDeInvocacao;
 
-    [Header("Debug")]
-    [SerializeField] private bool debug = false;
-
     public static bool AcumularPontos(int pontos)
     {
         valorAtual += pontos;
@@ -23,7 +19,6 @@ public class Caca : MonoBehaviour
         {
             valorAtual = 0;
             invocacaoPendente = true;
-
             return true;
         }
 
@@ -38,17 +33,12 @@ public class Caca : MonoBehaviour
         invocacaoPendente = false;
 
         if (pontoDeInvocacao == null || inimigoEspecial == null)
-        {
-            Debug.LogError("Inimigo especial ou ponto de invocação não definido.", this);
             return;
-        }
 
-        // Instancia o inimigo especial no ponto definido.
-        Instantiate(inimigoEspecial,pontoDeInvocacao.transform.position,Quaternion.identity);
+        GameObject especial = Instantiate(inimigoEspecial, pontoDeInvocacao.transform.position, Quaternion.identity);
 
-        if (debug)
-        {
-            Debug.Log("Caça iniciada! Inimigo especial instanciado.");
-        }
+        // Só o inimigo invocado pela Caça encerra o jogo ao morrer
+        if (especial.TryGetComponent(out mainInimigo inimigo))
+            inimigo.MarcarComoEspecial();
     }
 }

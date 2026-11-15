@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class mainInimigo : MonoBehaviour
@@ -7,7 +6,10 @@ public class mainInimigo : MonoBehaviour
 
     [Header("Configuração de Drop")]
     [SerializeField] private string nomeTipoInimigo = "Inimigo base";
-    [SerializeField] private ControladorHud CH;
+
+    [Header("Fim de jogo")]
+    [Tooltip("Se ligado, o jogo termina quando este inimigo morre. A Caça liga isso sozinha no inimigo especial.")]
+    [SerializeField] private bool finalizaJogoAoMorrer = false;
 
     private Material materialInimigo;
     private Color corOriginal;
@@ -25,6 +27,9 @@ public class mainInimigo : MonoBehaviour
         }
     }
 
+    // Chamado pela Caça ao invocar o inimigo especial
+    public void MarcarComoEspecial() => finalizaJogoAoMorrer = true;
+
     public void tomarDano(float dano)
     {
         if (morreu)
@@ -35,43 +40,29 @@ public class mainInimigo : MonoBehaviour
         if (materialInimigo != null)
         {
             corAlterada = !corAlterada;
-
-            materialInimigo.color = corAlterada
-                ? Color.gray
-                : corOriginal;
+            materialInimigo.color = corAlterada ? Color.gray : corOriginal;
         }
 
-        if (vida <= 0f)
+        if (vida > 0f)
+            return;
+
+        morreu = true;
+
+        // Soma pontos da Caça; ao atingir a meta, solta o item na posição do inimigo
+        bool iniciouCaca = Caca.AcumularPontos(Random.Range(10, 21));
+
+        dropsInimigos drops = dropsInimigos.Instancia;
+        if (drops != null)
         {
-            morreu = true;
-
-            // Acumula os pontos e verifica se atingiu a meta da Caça.
-            bool iniciouCaca = Caca.AcumularPontos(Random.Range(10, 21));
-
             if (iniciouCaca)
-            {
-                // Dropar o item na posição do inimigo que atingiu a meta.
-                if (dropsInimigos.Instancia != null)
-                {
-                    dropsInimigos.Instancia.DroparItemCaca(transform.position);
-                }
-            }
+                drops.DroparItemCaca(transform.position);
 
-            // Solicita os drops ao GameManager.
-            if (dropsInimigos.Instancia != null)
-            {
-                dropsInimigos.Instancia.DroparRecompensas(
-                    nomeTipoInimigo,
-                    transform.position
-                );
-            }
-
-            if(CH != null)
-            {
-                CH.FimGame();
-            }
-            Destroy(gameObject);
-            
+            drops.DroparRecompensas(nomeTipoInimigo, transform.position);
         }
+
+        if (finalizaJogoAoMorrer && ControladorHud.instancia != null)
+            ControladorHud.instancia.FimGame();
+
+        Destroy(gameObject);
     }
 }

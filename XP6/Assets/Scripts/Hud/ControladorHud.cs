@@ -42,7 +42,6 @@ public class ControladorHud : MonoBehaviour
     public static GameObject FimDeJogoStatic => instancia != null ? instancia.FimDeJogo : null;
 
     [Header("Armas")]
-    [SerializeField] private GameObject Armas;
     [SerializeField] private TMP_Text textoMunicao;
 
     [Header("Habilidades")]
@@ -173,21 +172,14 @@ public class ControladorHud : MonoBehaviour
     private void Preparar(SlotHabilidade slot)
     {
         if (slot.icone == null)
-        {
-            Debug.LogWarning("[HUD] Sprite não definido para " + slot.nome, this);
             return;
-        }
 
         // Sem Image atribuída: procura, dentro de Habilidades, o objeto com o nome da habilidade
         if (slot.imagem == null)
             slot.imagem = ProcurarImagem(slot.nome);
 
         if (slot.imagem == null)
-        {
-            Debug.LogWarning("[HUD] Não achei a Image da habilidade '" + slot.nome +
-                             "'. Arraste-a no campo 'Imagem' (dentro de Game > Habilidades).", this);
             return;
-        }
 
         slot.imagem.sprite = slot.icone;
         slot.imagem.type = Image.Type.Simple;
