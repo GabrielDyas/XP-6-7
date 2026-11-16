@@ -77,7 +77,7 @@ MonoBehaviour:
   tempoRecuperacao: 10
   distanciaAtaque: 2
   estado: 0
-  objetivo: {fileID: 3087359961266858337, guid: 227ebb9e0f51521498e2fff5758eaf4a, type: 3}
+  objetivo: {fileID: 0}
 --- !u!114 &6684873330742676368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::mainInimigo
   vida: 10
   nomeTipoInimigo: Inimigo base
-  CH: {fileID: 6465558787759108721, guid: f484a93a727c432498cacda9bd74bbc6, type: 3}
+  finalizaJogoAoMorrer: 0
 --- !u!114 &7956672654015359490
 MonoBehaviour:
   m_ObjectHideFlags: 0

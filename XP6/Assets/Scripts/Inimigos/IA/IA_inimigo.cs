@@ -32,7 +32,7 @@ public class IA_inimigo : MonoBehaviour
     private ataqueInimigo ataque;
     private float sensibilidade = 1f;
 
-    private void Start()
+    private void Awake()
     {
         inimigo = GetComponent<NavMeshAgent>();
         ataque = GetComponent<ataqueInimigo>();
