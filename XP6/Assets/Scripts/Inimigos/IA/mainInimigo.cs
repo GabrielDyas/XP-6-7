@@ -37,6 +37,8 @@ public class mainInimigo : MonoBehaviour
 
         vida -= dano;
 
+        GetComponent<IA_inimigo>()?.Alertar();
+
         if (materialInimigo != null)
         {
             corAlterada = !corAlterada;
