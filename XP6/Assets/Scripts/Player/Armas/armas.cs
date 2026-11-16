@@ -7,33 +7,54 @@ public class armas : MonoBehaviour
     [Header("Inputs")]
     [SerializeField] private InputActionReference acaoAtirar;
     [SerializeField] private InputActionReference acaoRecarregar;
+    [SerializeField] private InputActionReference acaoTrocarArma;
 
     [Header("Referencias Script")]
     [SerializeField] private controleTiro controladorTiro;
     [SerializeField] private controleArmaVisual controladorVisual;
     [SerializeField] private controleSomArma controladorSom;
 
-    [Header("Arma equipada")]
+    [Header("Armas")]
     [SerializeField] private infoArmas dadosArmaEquipada;
+    [SerializeField] private infoArmas dadosArmaSecundaria;
+
+    private infoArmas dadosArmaPrincipal;
 
     private int municaoAtual;
+    private int municaoArmaPrincipal;
+    private int municaoArmaSecundaria;
+
+    private bool armaSecundariaEquipada = false;
     private bool recarregando = false;
+
     private float proximoDisparo;
+
     [SerializeField] private bool debug = false;
 
     private void Awake()
     {
         if (dadosArmaEquipada == null)
         {
-            Debug.LogError("Dados da arma não definidos no Inspector.", this);
+            Debug.LogError("Dados da arma principal não definidos.", this);
             enabled = false;
             return;
         }
 
-        if (dadosArmaEquipada.automatica && dadosArmaEquipada.cadencia <= 0)
+        dadosArmaPrincipal = dadosArmaEquipada;
+
+        if (dadosArmaPrincipal.automatica && dadosArmaPrincipal.cadencia <= 0)
         {
-            Debug.LogError("A cadência da arma automática deve ser maior que zero.", this);
-            enabled = false; // tá aqui pra impedir divir por zero no calculo da cadência
+            Debug.LogError("A cadência da arma principal deve ser maior que zero.", this);
+            enabled = false;
+            return;
+        }
+
+        if (dadosArmaSecundaria != null &&
+            dadosArmaSecundaria.automatica &&
+            dadosArmaSecundaria.cadencia <= 0)
+        {
+            Debug.LogError("A cadência da arma secundária deve ser maior que zero.", this);
+            enabled = false;
             return;
         }
 
@@ -41,39 +62,26 @@ public class armas : MonoBehaviour
         {
             controladorTiro = GetComponent<controleTiro>();
         }
-        // procura o controlador visual caso não tenha referência
+
         if (controladorVisual == null)
         {
             controladorVisual = GetComponent<controleArmaVisual>();
         }
 
-        // envia os dados da arma para o controlador visual
-        if (controladorVisual != null)
-        {
-            controladorVisual.Equipar(dadosArmaEquipada);
-
-            // Obtém o AudioSource do modelo instanciado.
-            if (controladorSom != null)
-            {
-                AudioSource audioSourceArma = controladorVisual.ObterAudioSource();
-                controladorSom.ConfigurarAudioSource(audioSourceArma);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Controlador visual da arma não encontrado.", this);
-        }
-
-        // Verifica se o controlador de som foi atribuído.
-        if (controladorSom == null && debug)
-        {
-            Debug.LogWarning("Controlador de som não definido no Inspector.", this);
-        }
-
+        // Inicializa a munição das duas armas.
         municaoAtual = dadosArmaEquipada.municao;
+        municaoArmaPrincipal = municaoAtual;
+
+        if (dadosArmaSecundaria != null)
+        {
+            municaoArmaSecundaria = dadosArmaSecundaria.municao;
+        }
+
+        AtualizarVisualSom();
+
         if (debug)
         {
-            Debug.Log("Munição total: " + dadosArmaEquipada.municao);
+            Debug.Log("Munição inicial: " + municaoAtual);
         }
     }
 
@@ -84,6 +92,9 @@ public class armas : MonoBehaviour
 
         if (acaoRecarregar != null)
             acaoRecarregar.action.Enable();
+
+        if (acaoTrocarArma != null)
+            acaoTrocarArma.action.Enable();
     }
 
     private void OnDisable()
@@ -93,12 +104,22 @@ public class armas : MonoBehaviour
 
         if (acaoRecarregar != null)
             acaoRecarregar.action.Disable();
+
+        if (acaoTrocarArma != null)
+            acaoTrocarArma.action.Disable();
     }
 
     private void Update()
     {
         if (dadosArmaEquipada == null || controladorTiro == null)
             return;
+
+        // Troca a arma quando solicitado.
+        if (acaoTrocarArma != null && acaoTrocarArma.action.triggered)
+        {
+            TrocarArma();
+            return;
+        }
 
         if (acaoRecarregar != null && acaoRecarregar.action.triggered)
         {
@@ -110,13 +131,13 @@ public class armas : MonoBehaviour
             {
                 Debug.Log("Já está recarregando.");
             }
+
             return;
         }
 
         if (acaoAtirar == null)
             return;
 
-        // ALTERADO: verifica o input dependendo do tipo de arma.
         bool solicitouDisparo;
 
         if (dadosArmaEquipada.automatica)
@@ -132,15 +153,8 @@ public class armas : MonoBehaviour
             return;
 
         if (recarregando)
-        {
-            if (debug)
-            {
-                Debug.Log("Não dá para atirar, recarregando.");
-            }
             return;
-        }
 
-        // NOVO: impede disparos automáticos antes do intervalo permitido.
         if (dadosArmaEquipada.automatica && Time.time < proximoDisparo)
             return;
 
@@ -149,9 +163,12 @@ public class armas : MonoBehaviour
             municaoAtual--;
 
             controladorTiro.Atirar(dadosArmaEquipada.dano);
-            controladorSom.TocarDisparo(dadosArmaEquipada);
 
-            // NOVO: calcula o intervalo entre os disparos automáticos.
+            if (controladorSom != null)
+            {
+                controladorSom.TocarDisparo(dadosArmaEquipada);
+            }
+
             if (dadosArmaEquipada.automatica)
             {
                 float intervaloEntreDisparos = 60f / dadosArmaEquipada.cadencia;
@@ -164,6 +181,73 @@ public class armas : MonoBehaviour
             }
         }
     }
+
+    private void TrocarArma()
+    {
+        if (dadosArmaSecundaria == null)
+        {
+            if (debug)
+            {
+                Debug.LogWarning("Arma secundária não configurada.", this);
+            }
+
+            return;
+        }
+
+        if (!armaSecundariaEquipada)
+        {
+            // Salva a munição da arma principal.
+            municaoArmaPrincipal = municaoAtual;
+
+            // Equipa a secundária.
+            dadosArmaEquipada = dadosArmaSecundaria;
+            municaoAtual = municaoArmaSecundaria;
+
+            armaSecundariaEquipada = true;
+        }
+        else
+        {
+            // Salva a munição da arma secundária.
+            municaoArmaSecundaria = municaoAtual;
+
+            // Equipa a principal.
+            dadosArmaEquipada = dadosArmaPrincipal;
+            municaoAtual = municaoArmaPrincipal;
+
+            armaSecundariaEquipada = false;
+        }
+
+        // Reinicia o intervalo de disparo.
+        proximoDisparo = 0f;
+
+        AtualizarVisualSom();
+
+        if (debug)
+        {
+            Debug.Log("Arma equipada: " + dadosArmaEquipada.nome);
+            Debug.Log("Munição: " + municaoAtual);
+        }
+    }
+
+    private void AtualizarVisualSom()
+    {
+        if (controladorVisual != null)
+        {
+            controladorVisual.Equipar(dadosArmaEquipada);
+
+            // Atualiza o AudioSource para o modelo da nova arma.
+            if (controladorSom != null)
+            {
+                AudioSource audioSourceArma = controladorVisual.ObterAudioSource();
+                controladorSom.ConfigurarAudioSource(audioSourceArma);
+            }
+        }
+        else if (debug)
+        {
+            Debug.LogWarning("Controlador visual da arma não encontrado.", this);
+        }
+    }
+
     private void Recarregar()
     {
         if (recarregando)
@@ -175,16 +259,24 @@ public class armas : MonoBehaviour
             {
                 Debug.Log("O carregador já está cheio.");
             }
+
             return;
         }
 
         recarregando = true;
-        controladorSom.TocarRecarga(dadosArmaEquipada);
+
+        if (controladorSom != null)
+        {
+            controladorSom.TocarRecarga(dadosArmaEquipada);
+        }
+
         municaoAtual = dadosArmaEquipada.municao;
+
         if (debug)
         {
             Debug.Log("Arma recarregada! Munição: " + municaoAtual);
         }
+
         recarregando = false;
     }
 

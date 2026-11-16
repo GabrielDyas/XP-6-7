@@ -207,6 +207,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::controleTiro
   cameraPrincipal: {fileID: 0}
   distanciaMaxima: 100
+  prefabTracer: {fileID: 0}
+  origemTracer: {fileID: 0}
   vidaDoRaioSegundos: 1
   debug: 0
 --- !u!114 &5134474537919310664
@@ -223,11 +225,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::armas
   acaoAtirar: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   acaoRecarregar: {fileID: 6660964564004154653, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  acaoTrocarArma: {fileID: -8669821928912887538, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   controladorTiro: {fileID: 8063520907699144439}
   controladorVisual: {fileID: 0}
   controladorSom: {fileID: 0}
-  dadosArmaEquipada: {fileID: 0}
-  debug: 0
+  dadosArmaEquipada: {fileID: 11400000, guid: 4367b6221338cc84e88175cea98b58f8, type: 2}
+  dadosArmaSecundaria: {fileID: 11400000, guid: 7efcbd6f7150e5f4090ab4ed0a914add, type: 2}
+  debug: 1
 --- !u!114 &2902629765525024228
 MonoBehaviour:
   m_ObjectHideFlags: 0

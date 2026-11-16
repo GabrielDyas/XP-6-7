@@ -115,6 +115,16 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "Trocar arma",
+                    "type": "Button",
+                    "id": "05762e15-782e-4aa5-aaae-d7a9f5dfd73f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -324,6 +334,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Recarregar",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "caf7da89-e4ad-468f-a8e2-ca2fd759dbf2",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Trocar arma",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
