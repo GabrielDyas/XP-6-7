@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3214d9e4000542341b25461130f8bc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IA_inimigo
-  areaDeSomJogador: {fileID: 6133829974763872669, guid: 227ebb9e0f51521498e2fff5758eaf4a, type: 3}
+  areaDeSomJogador: {fileID: 0}
   sensibilidadeEmBusca: 0.5
   tempoRecuperacao: 10
   distanciaAtaque: 2

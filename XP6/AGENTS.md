@@ -2,7 +2,7 @@
 - Project name: XP6
 - Unity version: Unity 6000.6.0f1
 - Active game object:
-  - Name: inimigo (2)
-  - Tag: Inimigo
-  - Layer: Terreno
+  - Name: Player
+  - Tag: Player
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

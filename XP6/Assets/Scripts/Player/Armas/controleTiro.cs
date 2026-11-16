@@ -34,7 +34,7 @@ public class controleTiro : MonoBehaviour
 
         // O Raycast encontra o objeto atingido.
         if (Physics.Raycast(raioDoTiro, out RaycastHit hit,
-            distanciaMaxima, Physics.DefaultRaycastLayers))
+            distanciaMaxima, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             pontoFinal = hit.point;
 

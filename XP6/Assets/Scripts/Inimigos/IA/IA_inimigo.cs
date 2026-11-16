@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -31,6 +32,8 @@ public class IA_inimigo : MonoBehaviour
     private NavMeshAgent inimigo;
     private ataqueInimigo ataque;
     private float sensibilidade = 1f;
+    private Coroutine empurraoAtual;
+    private bool emEmpurrao;
 
     private void Awake()
     {
@@ -40,6 +43,10 @@ public class IA_inimigo : MonoBehaviour
 
         if (ataque == null)
             Debug.LogError("[IA_inimigo] Adicione o componente ataqueInimigo.", this);
+
+        // Descarta referência a um asset (prefab fora da cena): ela apontaria para a origem do mundo.
+        if (areaDeSomJogador != null && !areaDeSomJogador.gameObject.scene.IsValid())
+            areaDeSomJogador = null;
 
         if (areaDeSomJogador == null)
         {
@@ -55,6 +62,9 @@ public class IA_inimigo : MonoBehaviour
 
     private void Update()
     {
+        if (emEmpurrao)
+            return;
+
         switch (estado)
         {
             case Estado.Inativo:
@@ -148,7 +158,6 @@ public class IA_inimigo : MonoBehaviour
         return distanciaQuadrada <= alcance * alcance;
     }
     #region Comando externo
-    /// <summary>Chamado por outro script (ex.: ao levar dano) para o inimigo perseguir o jogador na hora.</summary>
     public void Alertar()
     {
         if (areaDeSomJogador == null)
@@ -158,6 +167,45 @@ public class IA_inimigo : MonoBehaviour
         inimigo.isStopped = false;
         inimigo.destination = areaDeSomJogador.Centro;
         estado = Estado.Atacando;
+    }
+
+    public void Empurrar(Vector3 velocidade, float duracao)
+    {
+        if (inimigo == null || !inimigo.isActiveAndEnabled || !inimigo.isOnNavMesh || duracao <= 0f)
+            return;
+
+        if (empurraoAtual != null)
+            StopCoroutine(empurraoAtual);
+
+        empurraoAtual = StartCoroutine(RotinaEmpurrao(velocidade, duracao));
+    }
+
+    private IEnumerator RotinaEmpurrao(Vector3 velocidade, float duracao)
+    {
+        emEmpurrao = true;
+        inimigo.isStopped = true;
+        inimigo.velocity = Vector3.zero;
+
+        float tempo = 0f;
+        while (tempo < duracao)
+        {
+            // A força diminui linearmente ao longo do tempo.
+            float fator = 1f - tempo / duracao;
+            inimigo.Move(velocidade * fator * Time.deltaTime);
+            tempo += Time.deltaTime;
+            yield return null;
+        }
+
+        inimigo.isStopped = false;
+        emEmpurrao = false;
+        empurraoAtual = null;
+    }
+
+    private void OnDisable()
+    {
+        // Evita deixar o inimigo travado se for desativado no meio de um empurrão.
+        emEmpurrao = false;
+        empurraoAtual = null;
     }
     #endregion
 
