@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -40,6 +41,8 @@ public class ControladorHud : MonoBehaviour
     [SerializeField] private bool pularInicioAoReiniciar = true;
 
     public static GameObject FimDeJogoStatic => instancia != null ? instancia.FimDeJogo : null;
+    [Header("Caça")]
+    [SerializeField] private Slider sliderCaca;
 
     [Header("Armas")]
     [SerializeField] private TMP_Text textoMunicao;
@@ -92,13 +95,13 @@ public class ControladorHud : MonoBehaviour
 
     private void Update()
     {
-        // Update roda mesmo com timeScale = 0, por isso o cursor é controlado aqui
         AtualizarCursor();
 
         if (!iniciado)
             return;
 
         AtualizarMunicao();
+        AtualizarCaca();
 
         if (habilidades == null)
             return;
@@ -165,6 +168,19 @@ public class ControladorHud : MonoBehaviour
         ultimaCapacidade = maxima;
 
         textoMunicao.text = atual + " / " + maxima;
+    }
+
+
+    // ---------- Caça ----------
+
+    private void AtualizarCaca()
+    {
+        if (sliderCaca == null)
+            return;
+
+        sliderCaca.value = Caca.valorAlvo > 0
+            ? (float)Caca.valorAtual / Caca.valorAlvo
+            : 0f;
     }
 
     // ---------- Ícones das habilidades ----------
