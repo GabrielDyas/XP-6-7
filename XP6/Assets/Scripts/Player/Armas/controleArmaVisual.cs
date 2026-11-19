@@ -23,7 +23,7 @@ public class controleArmaVisual : MonoBehaviour
 
         if (modeloInstanciado != null)
         {
-            Debug.Log("Modelo nao esta nulo");
+            // Debug.Log("Modelo nao esta nulo");
             Destroy(modeloInstanciado);
         }
 

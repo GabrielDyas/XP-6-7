@@ -46,6 +46,8 @@ public class ControladorHud : MonoBehaviour
 
     [Header("Armas")]
     [SerializeField] private TMP_Text textoMunicao;
+    [SerializeField] private mainPlayer mainPlayer_script;
+    [SerializeField] private TMP_Text vida;
 
     [Header("Habilidades")]
     [SerializeField] private GameObject Habilidades;
@@ -100,6 +102,7 @@ public class ControladorHud : MonoBehaviour
         if (!iniciado)
             return;
 
+        AtualizarVida();
         AtualizarMunicao();
         AtualizarCaca();
 
@@ -170,6 +173,11 @@ public class ControladorHud : MonoBehaviour
         textoMunicao.text = atual + " / " + maxima;
     }
 
+    private void AtualizarVida()
+    {
+        float valorVida = mainPlayer_script.vida;
+        vida.text = "Vida: " + valorVida;
+    }
 
     // ---------- Caça ----------
 
